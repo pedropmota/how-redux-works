@@ -60,7 +60,7 @@ export default class StoreContainer extends React.Component {
         </button>
 
         <div 
-          class="currentState"
+          className="currentState"
           style={{ border: '1px solid gray' }}
           >{
               this.props.currentState ? JSON.stringify(this.props.currentState) : null

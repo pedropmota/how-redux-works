@@ -1,8 +1,20 @@
 .items-list {
   .items-list-item {
+    text-align: left;
+    display: flex;
+    padding: 2px 4px;
+
     &.selected {
       border: 1px solid green;
       padding: 3px 6px;
+    }
+
+    .items-list-name {
+      flex-grow: 1;
+    }
+
+    .items-list-delete {
+      
     }
   }
 }

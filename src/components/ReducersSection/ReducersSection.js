@@ -4,6 +4,9 @@ import { Dropdown } from "semantic-ui-react";
 import Select from "react-select";
 import makeAnimated from "react-select/lib/animated";
 
+import BaseItemsList from "../BaseItemsList/BaseItemsList";
+import BaseForm from "../BaseForm/BaseForm";
+
 import { parseReducer } from "../../utils/parser";
 
 
@@ -20,11 +23,12 @@ export default class ReducersSection extends React.Component {
     super(props);
 
     this.state = {
-      name: '',//props.name || '',
-      definition: '',//props.definition || '',
+      selectedReducer: null,
       selectedActions: [],//props.actions || ['addPerson', 'editPerson'],
       selectedEntity: [] //props.entity || 'people'
     }
+
+    this.handleSave = this.handleSave.bind(this);
   }
 
   getAutomaticDefinition(entity, actions) {
@@ -48,31 +52,6 @@ function ${Case.camel(entity)}(state = [], action) {
 }
 
 
-  handleInputChange(e) {
-    const inputName = e.target.name;
-    const value = e.target.value;
-
-
-    if(inputName === 'name') {
-      this.updateAutomaticDefinition(value, this.state.selectedActions)
-    }
-
-    this.setState({
-      [inputName]: value
-    })
-
-  }
-
-  updateAutomaticDefinition(entity, actions) {
-    if (!this.state.definition || 
-      this.state.definition === this.getAutomaticDefinition(this.state.name, this.state.selectedActions)) {
-      
-      this.setState({
-        definition: this.getAutomaticDefinition(entity, actions)
-      })
-    }
-  }
-
 
   handleActionsChange(actionIds) {
     const actions = this.props.actions.filter(a => actionIds.includes(a.id));
@@ -84,32 +63,29 @@ function ${Case.camel(entity)}(state = [], action) {
     })
   }
 
-
-  handleSave() {
-    if (!this.state.name)
-      return;
-
-    this.props.onAddReducer({
-      name: this.state.name,
-      definition: this.state.definition,
-      actions: this.state.selectedActions
+  handleItemSelection(item) {
+    this.setState({
+      selectedReducer: this.props.reducer.filter(r => r.id === item.id)[0]
     })
-    
-    
-    const test = parseReducer(this.state.definition, null);
+  }
 
-    //const test = esprima.parseScript(this.state.definition);
 
+  handleSave(reducer) {
+    //const test = parseReducer(this.state.definition, null);
+    
+    if (!reducer.id)
+      this.props.onAddReducer(reducer)
+    else
+      this.props.onEditReducer(reducer)
 
     this.setState({
-      name: '',
-      definition: '',
+      selectedReducer: null,
       selectedActions: []
     })
   }
 
-  handleDelete(id) {
-    this.props.onDeleteReducer(id);
+  handleDelete(reducer) {
+    this.props.onDeleteReducer(reducer.id);
   }
 
   render() {
@@ -174,42 +150,24 @@ function ${Case.camel(entity)}(state = [], action) {
           options={actionOptions}
           onChange={(values) => this.handleActionsChange(values.map(v => v.value)) } />
 
-        {this.props.reducers.map((reducer) => (
-          <div key={reducer.id}>
-            <span className="reducerName">{reducer.name}</span>
-            
-            <button
-              onClick={() => this.handleDelete(reducer.id)}>
-             X 
-            </button>
-          </div>
-        ))}
+        <BaseItemsList
+          items={this.props.reducers}
+          getId={reducer => reducer.id}
+          getName={reducer => reducer.name}
+          getIsSelected={reducer => this.state.selectedReducer && this.state.selectedReducer.id === reducer.id}
+          handleItemSelection={reducer => this.handleItemSelection(reducer)}
+          handleItemDeletion={reducer => this.handleDelete(reducer)} />
 
-        <input 
-          type="text"
-          style={styles.formInput}
-          value={this.state.name}
-          name="name"
-          onChange={(e) => this.handleInputChange(e)}
-          placeholder="Reducer Name"
-          />
 
-        <textarea
-          type="text"
-          style={{...styles.formInput, height: '100px', width: '200px'}}
-          value={this.state.definition}
-          name="definition"
-          onChange={(e) => this.handleInputChange(e)}
-          placeholder="Reducer Definition"
-          ></textarea>
-        
+        <BaseForm
+          idToEdit={this.state.selectedReducer ? this.state.selectedReducer.id : null}
+          nameToEdit={this.state.selectedReducer ? this.state.selectedReducer.name : null}
+          definitionToEdit={this.state.selectedReducer ? this.state.selectedReducer.definition : null}
+          getAutomaticDefinition={this.getAutomaticDefinition}
+          handleSave={this.handleSave}
+          namePlaceholder={`Reducer Name`}
+          definitionPlaceholder={`Reducer Definition`} />
 
-        <button
-          style={styles.formInput}
-          onClick={() => this.handleSave()}
-        >
-          Add
-        </button>
       </div>
     )
   }

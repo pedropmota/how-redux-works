@@ -2,6 +2,9 @@ import React from "react";
 import Case from "case";
 
 import BaseItemsList from "../BaseItemsList/BaseItemsList";
+import BaseInputText from "../BaseInputText/BaseInputText";
+import BaseCodeEditor from "../BaseCodeEditor/BaseCodeEditor";
+import BaseForm from "../BaseForm/BaseForm";
 import { parseAction } from "../../utils/parser";
 
 import "./ActionsSection.scss";
@@ -18,10 +21,12 @@ export default class ActionSection extends React.Component {
     super(props)
 
     this.state = {
-      name: props.name || '',
-      definition: props.definition || '',
-      selectedActionId: null
+      selectedAction: null,
+      nameInput: '',
+      definitionInput: ''
     }
+
+    this.handleSave = this.handleSave.bind(this);
   }
 
   getAutomaticDefinition(name) {
@@ -40,62 +45,33 @@ function ${camelName}(param1, param2) {
 
   }
 
+  handleItemSelection(item) {
+    this.setState({
+      selectedAction: this.props.actions.filter(a => a.id === item.id)[0]
+    })
+  }
 
-  handleInputChange(e) {
-    const inputName = e.target.name;
-    const value = e.target.value;
 
+  handleSave(action) {
+    const actionData = parseAction(action.definition)
 
-    if(inputName === 'name') {
-      if (!this.state.definition || 
-           this.state.definition === this.getAutomaticDefinition(this.state.name)) {
-        this.setState({
-          definition: this.getAutomaticDefinition(value)
-        })
-      }
+    const actionToSave = {
+      ...action,
+      name: actionData.name
     }
 
-    this.setState({
-      [inputName]: value
-    })
-
-  }
-
-  handleItemSelection(action) {
-    this.setState({
-      selectedActionId: action.id,
-      name: action.name,
-      definition: action.definition
-    })
-  }
-
-
-  handleSave() {
-    if (!this.state.name)
-      return;
-
-    const actionData = parseAction(this.state.definition)
-
-    const action = ({
-      id: this.state.selectedActionId,
-      name: actionData.name,
-      definition: this.state.definition
-    })
-
-    if (!this.state.selectedActionId)
-      this.props.onAddAction(action)
+    if (!actionToSave.id)
+      this.props.onAddAction(actionToSave)
     else
-      this.props.onEditAction(action)
+      this.props.onEditAction(actionToSave)
 
     this.setState({
-      name: '',
-      definition: '',
-      selectedActionId: null
+      selectedAction: null
     })
   }
 
-  handleDelete(id) {
-    this.props.onDeleteAction(id);
+  handleDelete(action) {
+    this.props.onDeleteAction(action.id);
   }
 
   render() {
@@ -107,35 +83,20 @@ function ${camelName}(param1, param2) {
           items={this.props.actions}
           getId={action => action.id}
           getName={action => action.name}
-          selectedId={this.state.selectedActionId}
-          handleItemSelection={(action) => this.handleItemSelection(action)}
-          handleItemDeletion={(action) => this.handleDelete(action)} />
+          getIsSelected={action => this.state.selectedAction && this.state.selectedAction.id === action.id}
+          handleItemSelection={action => this.handleItemSelection(action)}
+          handleItemDeletion={action => this.handleDelete(action)} />
 
-        <input 
-          type="text"
-          style={styles.formInput}
-          value={this.state.name}
-          name="name"
-          onChange={(e) => this.handleInputChange(e)}
-          placeholder="Type your action name to auto-generate it"
-          />
-
-        <textarea
-          type="text"
-          style={{...styles.formInput, height: '100px', width: '200px'}}
-          value={this.state.definition}
-          name="definition"
-          onChange={(e) => this.handleInputChange(e)}
-          placeholder="Or add the definition directly"
-          ></textarea>
         
+        <BaseForm
+          idToEdit={this.state.selectedAction ? this.state.selectedAction.id : null}
+          nameToEdit={this.state.selectedAction ? this.state.selectedAction.name : null}
+          definitionToEdit={this.state.selectedAction ? this.state.selectedAction.definition : null}
+          getAutomaticDefinition={this.getAutomaticDefinition}
+          handleSave={this.handleSave}
+          namePlaceholder={`Type your action name to auto-generate it`}
+          definitionPlaceholder={`Or add/edit the definition directly`} />
 
-        <button
-          style={styles.formInput}
-          onClick={() => this.handleSave()}
-        >
-          {this.state.selectedActionId ? 'Save' : 'Add'}
-        </button>
       </div>
     )
   }

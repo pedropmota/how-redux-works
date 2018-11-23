@@ -1,4 +1,5 @@
-import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER } from '../actions';
+import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from '../actions';
+import { validateReducer } from "../validation";
 import { newUuid } from "../utils";
 
 export function reducers(state = [], action) {
@@ -10,12 +11,13 @@ export function reducers(state = [], action) {
           id: newUuid(),
           name: action.name,
           definition: action.definition,
-          actions: action.actions.map(a => a.id)
+          actions: action.actions.map(a => a.id),
+          errorMessage: validateReducer(action.definition, action.actions) || validateDuplicatedName(state, action)
         }
       ]
     
     case EDIT_REDUCER: {
-      return state.map((item) => { 
+      return state.map(item => { 
         if (item.id !== action.id)
           return item
 
@@ -23,7 +25,8 @@ export function reducers(state = [], action) {
           ...item,
           name: action.name,
           definition: action.definition,
-          actions: action.actions.map(a => a.id)
+          actions: action.actions.map(a => a.id),
+          errorMessage: validateReducer(action.definition, action.actions) || validateDuplicatedName(state, action)
         }
       })
     }
@@ -32,9 +35,28 @@ export function reducers(state = [], action) {
       return state.filter((item) => item.id !== action.id)
     }
 
+    case REVALIDATE_REDUCERS: {
+      return state.map(item => { 
+        if (!item.actions.includes(action.affectedActionId))
+          return item
+
+        const reducerActions = action.allActions.filter(a => item.actions.includes(a.id))
+        return {
+          ...item,
+          errorMessage: validateReducer(item.definition, reducerActions)
+        }
+      })
+    }
+
     default:
       return state;
   }
+}
 
 
+export function validateDuplicatedName(allReducers, current) {
+  if (allReducers.some(a => a.name === current.name && a.id !== current.id))
+    return `Another reducer already has the same name`
+  
+  return null;
 }

@@ -8,6 +8,7 @@ import BaseForm from "../BaseForm/BaseForm";
 import { parseAction } from "../../utils/parser";
 
 import "./ActionsSection.scss";
+import ActionsForm from "./ActionsForm";
 
 const styles = {
   formInput: { display: 'block', margin: 'auto' }
@@ -21,28 +22,13 @@ export default class ActionSection extends React.Component {
     super(props)
 
     this.state = {
-      selectedAction: null,
-      nameInput: '',
-      definitionInput: ''
+      selectedAction: null
     }
 
-    this.handleSave = this.handleSave.bind(this);
-  }
-
-  getAutomaticDefinition(name) {
-    if (!name)
-      return '';
-
-    const camelName = Case.camel(name);
-    const constantName = Case.constant(name)
-    
-    return `
-const ${constantName} = '${constantName}'
-
-function ${camelName}(param1, param2) {
-  return { type: ${constantName}, param1, param2 }
-}`.trim()
-
+    this.handleSave = this.handleSave.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
+    this.handleItemSelection = this.handleItemSelection.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   handleItemSelection(item) {
@@ -53,17 +39,10 @@ function ${camelName}(param1, param2) {
 
 
   handleSave(action) {
-    const actionData = parseAction(action.definition)
-
-    const actionToSave = {
-      ...action,
-      name: actionData.name
-    }
-
-    if (!actionToSave.id)
-      this.props.onAddAction(actionToSave)
+    if (!action.id)
+      this.props.onAddAction(action)
     else
-      this.props.onEditAction(actionToSave)
+      this.props.onEditAction(action)
 
     this.setState({
       selectedAction: null
@@ -74,6 +53,13 @@ function ${camelName}(param1, param2) {
     this.props.onDeleteAction(action.id);
   }
 
+  handleCancel() {
+    this.setState({
+      selectedAction: null
+    })
+  }
+
+
   render() {
     return (
       <div className="actionsSection">
@@ -83,19 +69,16 @@ function ${camelName}(param1, param2) {
           items={this.props.actions}
           getId={action => action.id}
           getName={action => action.name}
+          getError={action => action.errorMessage}
           getIsSelected={action => this.state.selectedAction && this.state.selectedAction.id === action.id}
-          handleItemSelection={action => this.handleItemSelection(action)}
-          handleItemDeletion={action => this.handleDelete(action)} />
+          handleItemSelection={this.handleItemSelection}
+          handleItemDeletion={this.handleDelete} />
 
-        
-        <BaseForm
-          idToEdit={this.state.selectedAction ? this.state.selectedAction.id : null}
-          nameToEdit={this.state.selectedAction ? this.state.selectedAction.name : null}
-          definitionToEdit={this.state.selectedAction ? this.state.selectedAction.definition : null}
-          getAutomaticDefinition={this.getAutomaticDefinition}
-          handleSave={this.handleSave}
-          namePlaceholder={`Type your action name to auto-generate it`}
-          definitionPlaceholder={`Or add/edit the definition directly`} />
+
+        <ActionsForm
+          selectedAction={this.state.selectedAction}
+          onSave={this.handleSave}
+          onCancel={this.handleCancel} />
 
       </div>
     )

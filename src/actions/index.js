@@ -9,6 +9,7 @@ export const DELETE_ACTION = 'DELETE_ACTION'
 export const ADD_REDUCER = 'ADD_REDUCER'
 export const EDIT_REDUCER = 'EDIT_REDUCER'
 export const DELETE_REDUCER = 'DELETE_REDUCER'
+export const REVALIDATE_REDUCERS = 'REVALIDATE_REDUCERS'
 
 export const UPDATE_STORE = 'UPDATE_STORE'
 export const DISPATCH_ACTION = 'DISPATCH_ACTION'
@@ -30,18 +31,24 @@ export function deleteAction(id) {
 }
 
 
-
 export function addReducer(name, definition, actions) {
   return { type: ADD_REDUCER, name, definition, actions }
 }
 
-export function editReducer(id, name, definition) {
-  return { type: EDIT_REDUCER, id, name, definition }
+export function editReducer(id, name, definition, actions) {
+  return { type: EDIT_REDUCER, id, name, definition, actions }
 }
 
 export function deleteReducer(id) {
   return { type: DELETE_REDUCER, id }
 }
+
+export function revalidateReducers(affectedActionId, allActions) {
+  return { type: REVALIDATE_REDUCERS, affectedActionId, allActions }
+}
+
+
+
 
 export function updateStore(reducers, actions) {
   return { type: UPDATE_STORE, reducers, actions }

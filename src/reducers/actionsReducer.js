@@ -1,4 +1,5 @@
-import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION } from '../actions';
+import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, SET_ACTION_ERROR } from '../actions';
+import { validateAction,  } from "../validation";
 import { newUuid } from "../utils";
 
 export function actions(state = [], action) {
@@ -9,19 +10,21 @@ export function actions(state = [], action) {
         {
           id: newUuid(),
           name: action.name,
-          definition: action.definition
+          definition: action.definition,
+          errorMessage: validateAction(action.definition) || validateDuplicatedName(state, action)
         }
       ]
     
     case EDIT_ACTION: {
-      return state.map((item) => { 
+      return state.map(item => { 
         if (item.id !== action.id)
           return item
 
         return {
           ...item,
           name: action.name,
-          definition: action.definition
+          definition: action.definition,
+          errorMessage: validateAction(action.definition) || validateDuplicatedName(state, action)
         }
       })
     }
@@ -33,6 +36,12 @@ export function actions(state = [], action) {
     default:
       return state;
   }
+}
 
 
+export function validateDuplicatedName(allActions, current) {
+  if (allActions.some(a => a.name === current.name && a.id !== current.id))
+    return `Another action creator already has the same name`
+  
+  return null;
 }

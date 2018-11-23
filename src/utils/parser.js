@@ -1,6 +1,7 @@
 import * as esprima from 'esprima'
 
 
+
 export const parseAction = function(actionString) {
 
   try {

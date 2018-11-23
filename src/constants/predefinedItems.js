@@ -1,3 +1,5 @@
+//TODO: Test function-to-string in all browsers
+
 export const predefinedReducers = [{ 
   entity: 'people',
   actions: ['addPerson', 'editPerson'],
@@ -26,25 +28,24 @@ function people(state = [], action) {
       return state;
   }
 }`
+
 }, {
   entity: 'devices',
   actions: ['addDevice', 'removeDevice'],
   definition: `
-function devices(state = [], action) {
-  switch (action.type) {
-    case ADD_DEVICE:
-      return [...state, {
-        name: action.name
-      }]
-    
-    case REMOVE_DEVICE:
-      return state.filter((item, index) => index !== action.index)
+    function devices(state = [], action) {
+      switch (action.type) {
+        case ADD_DEVICE:
+          return [...state, {
+            name: action.name
+          }]
+        
+        case REMOVE_DEVICE:
+          return state.filter((item, index) => index !== action.index)
 
-    default:
-      return state;
-  }
-}
-
-
-  `
+        default:
+          return state;
+      }
+    }
+ }`
 }]

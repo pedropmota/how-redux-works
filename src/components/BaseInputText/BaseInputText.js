@@ -1,6 +1,6 @@
 import React from "react";
 
-export default BaseInputText = ({ name, value, placeholder, onChange }) =>
+const BaseInputText = ({ name, value, placeholder, onChange, style }) =>
   <input
     type="text"
     style={style}
@@ -9,3 +9,5 @@ export default BaseInputText = ({ name, value, placeholder, onChange }) =>
     onChange={onChange}
     placeholder={placeholder}
     />
+
+export default BaseInputText;

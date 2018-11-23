@@ -114,7 +114,7 @@ console.log('input change', value)
           mode="javascript"
           theme="monokai"
           name="definition"
-          OnChange={e => this.handleInputChange(e)}
+          onChange={e => this.handleInputChange(e)}
           fontSize={14}
           height="100%"
           showPrintMargin={true}

@@ -1,60 +1,41 @@
 import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from "redux-saga";
 import reducers from '../reducers';
 import { addReducer, editAction, deleteReducer, updateStore, UPDATE_STORE, DISPATCH_ACTION } from "../actions";
-
-/**
- * The store is saved on the localStorage by version.
- */
-const storeVersion = '1.1';
-const storeKey = `current-store-v${storeVersion}`;
-
-const getStoredState = () => {
-  const value = localStorage.getItem(storeKey);
-  return value ? JSON.parse(value) : null
-}
-const setStoredState = (state) => {
-  const toStore = {
-    actions: state.actions,
-    reducers: state.reducers
-  }
-
-  localStorage.setItem(storeKey, JSON.stringify(toStore))
-}
+import { userStoreUpdater } from "./userStoreUpdater";
+import { reducerRevalidator } from "./reducerRevalidator";
+import { getStoredState, storeState } from "./storeStorage";
 
 
-
-const storeUpdater = store => next => action => {
-  //console.log('dispatching', action)
-  let result = next(action)
-
-  //If needed, change this to only update the store when specific actions are called:
-  if (action.type !== UPDATE_STORE &&
-      action.type !== DISPATCH_ACTION) {
-    const userReducers = store.getState().reducers;
-    const userActions = store.getState().actions;
-    store.dispatch(updateStore(userReducers, userActions));
-  }
-
-  //console.log('next state', store.getState())
-  return result
-}
-
+const sagaMiddleware = createSagaMiddleware();
 
 const storedState = getStoredState();
 
-const store = storedState ?
-  createStore(reducers, storedState, applyMiddleware(storeUpdater)) :
-  createStore(reducers, applyMiddleware(storeUpdater));
+const actionLogger = store => next => action => {
+  console.log('Running action: ', action.type, action)
+  return next(action);
+}
 
-const unsubscribe = store.subscribe(() => { 
+
+const middlewares = applyMiddleware(sagaMiddleware, actionLogger);
+
+const store = storedState ?
+  createStore(reducers, storedState, middlewares) :
+  createStore(reducers, middlewares);
+
+
+sagaMiddleware.run(reducerRevalidator)
+sagaMiddleware.run(userStoreUpdater)
+
+const unsubscribe = store.subscribe((info) => {
   const state = store.getState();
   console.log(`Current state:`, state)
 
   if (state)
-    setStoredState(state);
+    storeState(state);
 
 
-  const userStore = state.store && state.store.store ? state.store.store : null;
+  const userStore = state.store ? state.store.store : null;
   console.log(`User's store:`, userStore ? userStore.getState() : null)
 })
 

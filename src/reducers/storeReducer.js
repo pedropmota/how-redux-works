@@ -1,7 +1,7 @@
 import { createStore, combineReducers } from "redux";
-import { UPDATE_STORE, DISPATCH_ACTION } from "../actions";
-import { evaluateReducer, evaluateDispatch } from "../validation";
-
+import { UPDATE_STORE, DISPATCH_ACTION, CLEAR_STORE } from "../actions";
+import { evaluateReducer } from "../parsing/reducerParser";
+import { evaluateDispatch } from "../parsing/dispatchParser";
 
 export function store(state = null, action) {
 
@@ -42,6 +42,12 @@ export function store(state = null, action) {
         ...state,
         dispatchedActions: [...(state.dispatchedActions || []), evaluatedInput]
       }
+    
+    case CLEAR_STORE:
+
+      //todo
+      return state;
+      
 
     default:
       return state;

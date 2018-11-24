@@ -13,6 +13,7 @@ export const REVALIDATE_REDUCERS = 'REVALIDATE_REDUCERS'
 
 export const UPDATE_STORE = 'UPDATE_STORE'
 export const DISPATCH_ACTION = 'DISPATCH_ACTION'
+export const CLEAR_STORE = 'CLEAR_STORE'
 
 /**
  * action creators
@@ -49,12 +50,14 @@ export function revalidateReducers(affectedActionId, allActions) {
 
 
 
-
 export function updateStore(reducers, actions) {
   return { type: UPDATE_STORE, reducers, actions }
 }
 
-
 export function dispatchAction(input, currentActions) {
   return { type: DISPATCH_ACTION, input, currentActions }
+}
+
+export function clearStore() {
+  return { type: CLEAR_STORE }
 }

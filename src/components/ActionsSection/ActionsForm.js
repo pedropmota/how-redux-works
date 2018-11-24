@@ -51,11 +51,11 @@ export default class ActionsForm extends React.Component {
     const constantName = Case.constant(name)
     
     return `
-      const ${constantName} = '${constantName}'
+const ${constantName} = '${constantName}'
 
-      function ${camelName}(param1, param2) {
-        return { type: ${constantName}, param1, param2 }
-      }`
+function ${camelName}(param1, param2) {
+  return { type: ${constantName}, param1, param2 }
+}`
       .trim()
 
   }

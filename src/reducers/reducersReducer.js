@@ -1,5 +1,5 @@
 import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from '../actions';
-import { validateReducer } from "../validation";
+import { validateReducer } from "../parsing/reducerParser";
 import { newUuid } from "../utils";
 
 export function reducers(state = [], action) {

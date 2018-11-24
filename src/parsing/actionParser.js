@@ -21,7 +21,7 @@ export function validateAction(actionDefinition) {
 
 
 
-function parseAction(actionString) {
+export function parseAction(actionString) {
 
   const script = acorn.parse(actionString);
 

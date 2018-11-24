@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { dispatchAction } from "../actions";
+import { dispatchAction, clearStore } from "../actions";
 import StoreSection from "../components/StoreSection/StoreSection";
 
 const mapStateToProps = state => {
@@ -13,6 +13,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onDispatch: ({ input, currentActions }) => {
     dispatch(dispatchAction(input, currentActions))
+  },
+  onClearStore: () => {
+    dispatch(clearStore())
   }
 })
 

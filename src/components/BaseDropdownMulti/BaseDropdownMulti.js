@@ -62,10 +62,11 @@ menuValue:  (styles, { data }) => ({
 }
 
 
-const BaseDropdownMulti = ({ options, value, placeholder, onChange }) =>
+const BaseDropdownMulti = ({ options, value, placeholder, onChange, disabled, ...props }) =>
   <Select 
     placeholder={placeholder}
     isMulti
+    isDisabled={disabled}
     closeMenuOnSelect={false}
     component={makeAnimated()}
     options={options}
@@ -74,7 +75,7 @@ const BaseDropdownMulti = ({ options, value, placeholder, onChange }) =>
     onChange={onChange} //function param: onChange([{ label, value }])
     className='react-select-container' 
     classNamePrefix="react-select"
-
+    {...props}
     //menuIsOpen={true}
     />
 

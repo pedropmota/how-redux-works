@@ -1,13 +1,13 @@
 import React from "react";
 
-const BaseInputText = ({ name, value, placeholder, onChange, style }) =>
+const BaseInputText = ({ name, value, placeholder, onChange, ...props }) =>
   <input
     type="text"
-    style={style}
     name={name}
     value={value}
     onChange={onChange}
     placeholder={placeholder}
+    {...props}
     />
 
 export default BaseInputText;

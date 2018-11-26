@@ -2,8 +2,10 @@ import React from "react";
 
 import BaseItemsList from "../BaseItemsList/BaseItemsList";
 
-import { predefinedReducers } from "../../constants/predefinedItems";
+import { predefinedReducers, predefinedActions } from "../../constants/predefinedItems";
 import ReducersForm from "./ReducersForm";
+import { Container } from "semantic-ui-react";
+import "./ReducersSection.scss"
 
 export default class ReducersSection extends React.Component {
   
@@ -18,6 +20,17 @@ export default class ReducersSection extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleItemSelection = this.handleItemSelection.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handlePredefinedSelected = this.handlePredefinedSelected.bind(this);
+  }
+
+
+  handlePredefinedSelected(predefinedReducer) {
+    const existingActions = this.props.actions;
+    const actionsToAdd = predefinedActions.filter(p => 
+      predefinedReducer.actions.includes(p.name) && !existingActions.some(a => a.name === p.name))
+
+    actionsToAdd.forEach(action =>
+      this.props.onAddAction(action))
   }
 
   handleItemSelection(item) {
@@ -26,7 +39,7 @@ export default class ReducersSection extends React.Component {
     })
   }
 
-  handleSave(reducer) {
+  handleSave(reducer, predefinedSelected) {
     if (!reducer.id) {
       this.props.onAddReducer(reducer)
     } else {
@@ -36,6 +49,8 @@ export default class ReducersSection extends React.Component {
         selectedReducer: null
       })
     }
+
+    //this.addPredefinedItemActions(predefinedSelected)
   }
 
   handleDelete(reducer) {
@@ -52,7 +67,7 @@ export default class ReducersSection extends React.Component {
     
 
     return (
-      <div>
+      <Container className="reducers-section">
         <h2>Reducers</h2>
 
         <BaseItemsList
@@ -68,13 +83,12 @@ export default class ReducersSection extends React.Component {
           actions={this.props.actions}
           selectedReducer={this.state.selectedReducer}
           onSave={this.handleSave}
-          onCancel={this.handleCancel}>
-      
-          
+          onCancel={this.handleCancel}
+          onPredefinedSelected={this.handlePredefinedSelected}>
 
         </ReducersForm>
 
-      </div>
+      </Container>
     )
   }
 

@@ -9,21 +9,25 @@ export function store(state = null, action) {
     case UPDATE_STORE:
       
       const reducers = evalateUserReducers(action.reducers, action.actions)
-
+      
       if (!reducers)
-        return state;
+        return null;
       
       if (!state)
         return { 
           ...state,
-          store: createStore(reducers)
+          userStore: createStore(reducers)
         }
 
       //TODO Validate if reducers have changed
+      //store.replaceReducer?
+
+      const userStore = state.userStore;
+      userStore.replaceReducer(reducers)
 
       return { 
         ...state,
-        store: createStore(reducers)
+        userStore: userStore
       }
       
       //TODO The immutable logic to create new store every time needs to run all actions previously executed, to maintain state.
@@ -31,12 +35,12 @@ export function store(state = null, action) {
 
     case DISPATCH_ACTION:
       
-      if (!state || !state.store)
+      if (!state || !state.userStore)
         throw Error(`Action cannot be dispatched if the store's store is null`)
       
       const evaluatedInput = evaluateDispatch(action.input, action.currentActions)
 
-      state.store.dispatch(evaluatedInput);
+      state.userStore.dispatch(evaluatedInput);
 
       return {
         ...state,

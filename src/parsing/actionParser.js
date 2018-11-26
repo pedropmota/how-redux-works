@@ -1,4 +1,5 @@
 import * as acorn from "acorn";
+import Case from 'case';
 
 /**
  * Validates an action, returning an error message if any, or null if there's no error
@@ -51,4 +52,28 @@ export function parseAction(actionString) {
     name: functionDeclaration.id.name,
     params: functionDeclaration.params.map(p => p.name)
   }
+}
+
+
+/**
+ * Returns an automatic "default" action creator, based on a name and params.
+ * @param {string} name - The action creator name
+ * @param {string[]} paramNames - List of parameters that the action creator receives
+ */
+export function getAutoDefinition(name, paramNames = ['param1', 'param2']) {
+  if (!name)
+    return '';
+
+  const camelName = Case.camel(name);
+  const constantName = Case.constant(name)
+  const params = paramNames.join(', ')
+
+  return `
+const ${constantName} = '${constantName}'
+
+function ${camelName}(${params}) {
+return { type: ${constantName}, ${params} }
+}`
+    .trim()
+
 }

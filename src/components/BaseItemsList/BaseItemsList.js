@@ -2,8 +2,13 @@ import React from "react";
 import './BaseItemsList.scss';
   
 export default function BaseItemsList({ items, getId, getName, getError, getIsSelected, handleItemSelection, handleItemDeletion }) {
+  
+  const isEmpty = !items.length
+
   return (
-    <div className="items-list">
+    <fieldset className={`items-list ${isEmpty ? 'empty' : ''}`}>
+      <legend>Your reducers</legend>
+
       {items.map((item) => {
         const id = getId(item)
         const name = getName(item)
@@ -18,7 +23,7 @@ export default function BaseItemsList({ items, getId, getName, getError, getIsSe
             <span
               className='items-list-name'
               onClick={e => handleItemSelection(item)}>
-              {name}
+              {name || '(unnamed)'}
               {isSelected ? '(editing)' : null}
             </span>
             
@@ -38,6 +43,6 @@ export default function BaseItemsList({ items, getId, getName, getError, getIsSe
           </div>
         )}
       )}
-    </div>
+    </fieldset>
   )
 }

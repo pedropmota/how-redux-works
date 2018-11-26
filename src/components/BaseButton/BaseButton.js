@@ -1,10 +1,11 @@
 import React from "react";
 
-const BaseButton = ({ text, onClick, style }) => 
+const BaseButton = ({ text, onClick, ...props }) => 
   <button
-    style={style}
-    onClick={onClick}>
-
+    onClick={onClick}
+    {...props}
+    >
+    
     { text }
 
   </button>

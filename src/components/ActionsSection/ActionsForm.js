@@ -4,26 +4,34 @@ import Case from 'case';
 import BaseInputText from "../BaseInputText/BaseInputText";
 import BaseCodeEditor from "../BaseCodeEditor/BaseCodeEditor";
 import BaseButton from "../BaseButton/BaseButton";
-
-//import { predefinedActions } from "../../constants/predefinedItems";
+import BaseDropdownGrouped from "../BaseDropdownGrouped/BaseDropdownGrouped";
+import { getAutoDefinition } from "../../parsing/actionParser";
+import { predefinedActions } from "../../constants/predefinedItems";
 
 
 
 export default class ActionsForm extends React.Component {
-  
+
+  state = {
+    nameInput: '',
+    definitionInput: '',
+    predefinedSelected: null,
+
+    selectedActionReference: null
+  }
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      nameInput: '',
-      definitionInput: '',
-      selectedActionReference: null
-    }
+    this.textInputRef = React.createRef()
 
     this.handleSave = this.handleSave.bind(this)
     this.handleNameInputChange = this.handleNameInputChange.bind(this)
     this.handleDefinitionInputChange = this.handleDefinitionInputChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleInputKeyPress = this.handleInputKeyPress.bind(this)
+    this.handlePredefinedSelection = this.handlePredefinedSelection.bind(this)
   }
   
   static getDerivedStateFromProps(props, state) {
@@ -42,35 +50,16 @@ export default class ActionsForm extends React.Component {
   }
 
 
-
-  getAutoDefinition(name) {
-    if (!name)
-      return '';
-
-    const camelName = Case.camel(name);
-    const constantName = Case.constant(name)
-    
-    return `
-const ${constantName} = '${constantName}'
-
-function ${camelName}(param1, param2) {
-  return { type: ${constantName}, param1, param2 }
-}`
-      .trim()
-
-  }
-
   tryRefreshingDefinition(newName) {
     const currentDefinition = this.state.definitionInput;
 
-    if (currentDefinition && currentDefinition !== this.getAutoDefinition(this.state.nameInput))
+    if (currentDefinition && currentDefinition !== getAutoDefinition(this.state.nameInput))
       return;
 
     this.setState({
-      definitionInput: this.getAutoDefinition(newName)
+      definitionInput: getAutoDefinition(newName)
     })
   }
-
 
   handleNameInputChange(e) {
     const value = e.target.value;
@@ -80,6 +69,8 @@ function ${camelName}(param1, param2) {
     this.setState({
       nameInput: value
     })
+
+    this.handleSave()
   }
 
 
@@ -99,43 +90,111 @@ function ${camelName}(param1, param2) {
 
     this.props.onSave(action);
 
-    this.setState({
-      nameInput: '',
-      definitionInput: ''
-    })
+    this.handleClear()
   }
 
   handleCancel() {
     this.props.onCancel()
   }
 
+  handleClear() {
+    this.setState({
+      nameInput: '',
+      definitionInput: '',
+      predefinedSelected: null
+    })
+  }
+
+  handleInputKeyPress(e) {
+    if (e.key === 'Enter' && e.target.value)
+      this.handleSave()
+  }
+
+  handlePredefinedSelection({ label, value }) {
+    const selected = predefinedActions.filter(a => a.name === value)[0]
+
+    this.setState((prevState, props) =>
+      selected ? ({
+        nameInput: selected.name,
+        definitionInput: selected.definition,
+        predefinedSelected: selected
+      }) : ({
+        predefinedSelected: null
+      })
+    )
+    
+    this.textInputRef.current.focus()
+  }
+
+  
+  getHasInputChanges() {
+    const { nameInput, definitionInput } = this.state;
+    const { selectedAction } = this.props;
+
+    if (!selectedAction)
+      return nameInput || definitionInput;
+    else
+      return selectedAction.name !== nameInput || selectedAction.definition !== definitionInput
+  }
+
+
 
   render() {
+    const { nameInput, definitionInput, predefinedSelected } = this.state;
+    const hasChanges = this.getHasInputChanges();
+
+    const groupedOptions = [
+      {
+        label: 'Action creator examples',
+        options: predefinedActions.map(r => ({ label: r.name, value: r.name }))
+      },
+      {
+        label: 'Create your own',
+        options: [{ label: 'Create your own action creators', value: '' }]
+      }
+    ]
+
     return (
-      <div style={{ height: '300px' }}>
+      <div className="form">
       
-        <BaseInputText
+        <BaseDropdownGrouped
+          value={predefinedSelected ? { label: predefinedSelected.name, value: predefinedSelected.name } : null}
+          placeholder="Action creator examples"
+          groupedOptions={groupedOptions}
+          onChange={this.handlePredefinedSelection} />
+
+        <input
+          type="text"
           name="nameInput"
-          value={this.state.nameInput}
+          value={nameInput}
+          ref={this.textInputRef}
           onChange={this.handleNameInputChange}
-          placeholder={`Type your action name to auto-generate it`} />
+          onKeyPress={this.handleInputKeyPress}
+          placeholder={!hasChanges ? `Type your action name to auto-generate it` : `Action name`} />
 
         <BaseCodeEditor
           name="definitionInput"
-          value={this.state.definitionInput}
+          value={definitionInput}
           onChange={this.handleDefinitionInputChange} />
 
         <BaseButton
           text={this.props.selectedAction ? 'Save' : 'Add'}
           style={{}}
-          onClick={this.handleSave} />
+          onClick={this.handleSave}
+          disabled={!hasChanges}  />
 
         {this.props.selectedAction ?
           <BaseButton
             text={'Cancel'}
             onClick={this.handleCancel} />
-          : null
+          : 
+          <BaseButton
+            text={'Clear'}
+            disabled={!hasChanges}
+            onClick={this.handleClear} />
         }
+
+
 
         
       </div>

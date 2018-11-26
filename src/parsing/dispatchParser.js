@@ -7,7 +7,12 @@
  * @param {Action[]} actions 
  */
 export const evaluateDispatch = function (inputString, actions) {
-  const actionDefinitions = actions.map(a => a.definition).join('')
+  const actionDefinitions = (actions || []).filter(a => !a.errorMessage).map(a => a.definition).join('')
   
-  return eval(`${actionDefinitions} \n${inputString}`)
+  return (new Function(
+    `${actionDefinitions}
+     return ${inputString.trim()}`
+  )).call(null)
+
+  //return eval(`${actionDefinitions} \n${inputString}`)
 }

@@ -1,5 +1,7 @@
 import React from "react";
 import Case from "case";
+import { Container } from "semantic-ui-react";
+
 
 import BaseItemsList from "../BaseItemsList/BaseItemsList";
 import BaseInputText from "../BaseInputText/BaseInputText";
@@ -22,7 +24,8 @@ export default class ActionSection extends React.Component {
     super(props)
 
     this.state = {
-      selectedAction: null
+      selectedAction: null,
+      lastActionIdAdded: null
     }
 
     this.handleSave = this.handleSave.bind(this)
@@ -30,6 +33,21 @@ export default class ActionSection extends React.Component {
     this.handleItemSelection = this.handleItemSelection.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
   }
+
+  static getDerivedStateFromProps(props, state) {
+    const lastAction = props.actions.length ? props.actions[props.actions.length - 1] : null
+
+    if (!lastAction || state.lastActionIdAdded === lastAction.id)
+      return state
+    
+    return {
+      ...state,
+      lastActionIdAdded: lastAction.id,
+      selectedAction: lastAction
+    }
+  }
+
+
 
   handleItemSelection(item) {
     this.setState({
@@ -62,8 +80,8 @@ export default class ActionSection extends React.Component {
 
   render() {
     return (
-      <div className="actionsSection">
-        <h2>Actions</h2>
+      <Container className="actions-section">
+        <h2>Action Creators</h2>
 
         <BaseItemsList
           items={this.props.actions}
@@ -80,7 +98,7 @@ export default class ActionSection extends React.Component {
           onSave={this.handleSave}
           onCancel={this.handleCancel} />
 
-      </div>
+      </Container>
     )
   }
 

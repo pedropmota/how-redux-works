@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import ActionContainer from './containers/ActionContainer';
 import ReducerContainer from "./containers/ReducerContainer";
 import StoreContainer from "./containers/StoreContainer";
@@ -15,13 +15,12 @@ class App extends Component {
 
         <div style={{display: 'flex'}}>
 
-          <div>
-            <ActionContainer />
-          </div>
-          <div>
-            <ReducerContainer />
-          </div>
-            <StoreContainer />
+          <ActionContainer />
+          
+          <ReducerContainer />
+          
+          <StoreContainer />
+        
         </div>
       </div>
     );

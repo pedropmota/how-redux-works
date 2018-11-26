@@ -38,14 +38,24 @@ const formatGroupLabel = data => (
 );
 
 
-const BaseDropdownGrouped = ({ groupedOptions, onChange, placeholder }) =>
-  <Select
-    placeholder={placeholder}
-    options={groupedOptions}
-    formatGroupLabel={formatGroupLabel}
-    onChange={({ label, value }) => onChange({ label, value }) }
-    styles={dropdownStyles}
-    />
+class BaseDropdownGrouped extends React.Component {
+
+  render() {
+
+    const { groupedOptions, onChange, placeholder } = this.props;
+
+    return(
+      <Select
+        placeholder={placeholder}
+        options={groupedOptions}
+        formatGroupLabel={formatGroupLabel}
+        onChange={onChange} //function param: onChange({ label, value })
+        styles={dropdownStyles}
+        {...this.props}
+        />
+    )
+  }
+}
 
 
 export default BaseDropdownGrouped;

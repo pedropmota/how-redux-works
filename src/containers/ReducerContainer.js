@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { addReducer, editReducer, deleteReducer } from "../actions";
+import { addReducer, editReducer, deleteReducer, addAction } from "../actions";
 import ReducersSection from "../components/ReducersSection/ReducersSection";
 
 const mapStateToProps = state => ({
@@ -16,6 +16,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onDeleteReducer: (id) => {
     dispatch(deleteReducer(id))
+  },
+  onAddAction: ({ name, definition }) => {
+    dispatch(addAction(name, definition))
   }
 })
 

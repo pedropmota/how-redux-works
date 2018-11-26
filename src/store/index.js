@@ -34,8 +34,7 @@ const unsubscribe = store.subscribe((info) => {
   if (state)
     storeState(state);
 
-
-  const userStore = state.store ? state.store.store : null;
+  const userStore = state.store ? state.store.userStore : null;
   console.log(`User's store:`, userStore ? userStore.getState() : null)
 })
 

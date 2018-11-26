@@ -5,6 +5,7 @@ import beautify from "json-beautify";
 import Select from "react-select";
 import makeAnimated from "react-select/lib/animated";
 import BaseCodeEditor from "../BaseCodeEditor/BaseCodeEditor";
+import { Container } from "semantic-ui-react";
 
 const styles = {
   formInput: { display: 'block', margin: 'auto' }
@@ -50,11 +51,14 @@ export default class StoreContainer extends React.Component {
 
 
   render() {
-    const stateJson = this.props.currentState ? beautify(this.props.currentState, null, 2, 70) : null
-    
+    const { currentState, dispatchedActions } = this.props;
+
+    const stateJson = currentState ? beautify(currentState, null, 2, 70) : null
+    const actionsJson = dispatchedActions ? dispatchedActions.map(action => beautify(action)).join('\n') : null
+
     return (
-      <div>
-        <h3>Store</h3>
+      <Container>
+        <h2>Store</h2>
 
         <input
           type="text"
@@ -80,7 +84,14 @@ export default class StoreContainer extends React.Component {
         <BaseCodeEditor
           value={stateJson}
           isReadOnly={true}
+          style={{ marginBottom: '10px' }}
           />
+
+        <BaseCodeEditor
+          value={actionsJson}
+          isReadOnly={true}
+          />
+
 
         {/* <div 
           className="currentState"
@@ -89,7 +100,7 @@ export default class StoreContainer extends React.Component {
               
           }</div> */}
 
-      </div>
+      </Container>
     )
   }
 

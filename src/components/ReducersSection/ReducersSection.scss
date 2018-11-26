@@ -1,0 +1,11 @@
+.reducers-section {
+  
+  .input-fields {
+    display: flex;
+
+    input[type='text'], .react-select-container {
+      width: 50%;
+    }
+  }
+
+}

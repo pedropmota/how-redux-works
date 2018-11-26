@@ -9,42 +9,52 @@ import BaseDropdownGrouped from "../BaseDropdownGrouped/BaseDropdownGrouped";
 
 import { parseReducer } from "../../utils/parser";
 
-import { predefinedReducers } from "../../constants/predefinedItems";
+import { predefinedReducers, predefinedActions } from "../../constants/predefinedItems";
 
 
 
 export default class ReducersForm extends React.Component {
-  
+
+  state = {
+    nameInput: '',
+    definitionInput: '',
+    predefinedSelected: null,
+    selectedActions: [],
+    selectedReducerReference: null
+  }
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      nameInput: '',
-      definitionInput: '',
-      selectedActions: [],
-      selectedReducerReference: null
-    }
+    this.textInputRef = React.createRef()
 
     this.handleSave = this.handleSave.bind(this)
     this.handleNameInputChange = this.handleNameInputChange.bind(this)
     this.handleDefinitionInputChange = this.handleDefinitionInputChange.bind(this)
     this.handleActionsChange = this.handleActionsChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleInputKeyPress = this.handleInputKeyPress.bind(this)
+    this.handlePredefinedSelection = this.handlePredefinedSelection.bind(this)
   }
   
   static getDerivedStateFromProps(props, state) {
-    
+
     if (state.selectedReducerReference === props.selectedReducer)
       return state;
 
-    const { name, definition, actions } = props.selectedReducer || { }
+    if (!props.selectedReducer)
+      return { ...state, selectedReducerReference: null }
+
+    const { name, definition, actions } = props.selectedReducer;
     
     return {
       ...state,
-      nameInput: name || '',
-      definitionInput: definition || '',
-      selectedActions: props.actions.filter(a => (actions || []).some(s => s === a.id)),
-      selectedReducerReference: props.selectedReducer
+      nameInput: name,
+      definitionInput: definition,
+      selectedActions: props.actions.filter(a => actions.some(s => s === a.id)),
+      selectedReducerReference: props.selectedReducer,
+      predefinedSelected: null
     }
   }
 
@@ -110,86 +120,141 @@ function ${Case.camel(name)}(state = [], action) {
     })
   }
 
+  handleInputKeyPress(e) {
+    if (e.key === 'Enter' && e.target.value)
+      this.handleSave()
+  }
 
   handleSave() {
-    //const test = parseReducer(this.state.definition, null);
-    
     const reducer = {
       name: this.state.nameInput,
       definition: this.state.definitionInput,
       id: this.props.selectedReducer ? this.props.selectedReducer.id : null,
-      actions: this.state.selectedActions
+      actions: !this.state.predefinedSelected ? this.state.selectedActions : this.props.actions.filter(a => this.state.predefinedSelected.actions.includes(a.name))
     }
 
     this.props.onSave(reducer);
 
-    this.setState({
-      nameInput: '',
-      definitionInput: '',
-      selectedActions: []
-    })
+    this.handleClear();
   }
 
   handleCancel() {
+    this.handleClear();
     this.props.onCancel()
   }
 
+  handleClear() {
+    this.setState({
+      nameInput: '',
+      definitionInput: '',
+      selectedActions: [],
+      predefinedSelected: null
+    })
+  }
+
+  handlePredefinedSelection({ label, value }) {
+    const selected = predefinedReducers.filter(a => a.name === value)[0]
+
+    if (selected) {
+      this.props.onCancel()
+      this.props.onPredefinedSelected(selected)
+    }
+
+    this.setState((prevState, props) =>
+      selected ? ({
+        nameInput: selected.name,
+        definitionInput: selected.definition,
+        predefinedSelected: selected
+      }) : ({
+        predefinedSelected: null
+      })
+    )
+    
+    this.textInputRef.current.focus()
+  }
+
+  getHasInputChanges() {
+    const { nameInput, definitionInput, selectedActions } = this.state;
+    const { selectedReducer } = this.props;
+
+    if (!selectedReducer)
+      return nameInput || definitionInput || selectedActions.length;
+    else
+      return selectedReducer.name !== nameInput || 
+             selectedReducer.definition !== definitionInput || 
+             selectedReducer.actions.join('') !== selectedActions.join('')
+  }
+
+
 
   render() {
-    const groupedOptions = [
-      {
-        label: 'Predefined Reducers',
-        options: predefinedReducers.map(r => ({ label: r.entity, value: r.entity }))
-      },
-      {
-        label: 'Add Your Own',
-        options: [{ label: 'Add Your Own Reducers', value: '' }]
-      }
-    ]
+
+    const { nameInput, definitionInput, selectedActions, predefinedSelected } = this.state 
+    const hasChanges = this.getHasInputChanges();
+
+    const groupedOptions = [{
+      label: 'Predefined Reducers',
+      options: predefinedReducers.map(r => ({ label: r.name, value: r.name }))
+    },
+    {
+      label: 'Create your own',
+      options: [{ label: 'Create your own reducers', value: '' }]
+    }]
+    
+    const selectedActionsToDisplay = !predefinedSelected ? 
+      selectedActions : 
+      this.props.actions.filter(a => predefinedSelected.actions.includes(a.name))
     
     return (
-      <div style={{ height: '300px' }}>
-        
-
-        {this.props.children}
+      <fieldset className="form">
+        <legend>{this.props.selectedReducer ? 'Edit your reducer' : 'Add new reducers'}</legend>
 
         <BaseDropdownGrouped
-          placeholder="Predefined Reducers"
+          value={predefinedSelected ? { label: predefinedSelected.name, value: predefinedSelected.name } : null}
+          placeholder="Reducer examples"
           groupedOptions={groupedOptions}
-          onChange={() => {}} />
-          
+          onChange={this.handlePredefinedSelection} />
 
-        <BaseInputText
+        <input
+          type="text"
           name="nameInput"
-          value={this.state.nameInput}
+          ref={this.textInputRef}
+          value={nameInput}
           onChange={this.handleNameInputChange}
+          onKeyPress={this.handleInputKeyPress}
           placeholder={`Reducer Name`} />
 
         <BaseDropdownMulti
           options={this.props.actions.map(a => ({ label: a.name, value: a.id }))}
-          value={this.state.selectedActions.map(a => ({ value: a.id, label: a.name }))}
+          value={selectedActionsToDisplay.map(a => ({ label: a.name, value: a.id }))}
+          disabled={predefinedSelected ? true : false }
           onChange={this.handleActionsChange}
           placeholder="Pick some actions" />
 
+
         <BaseCodeEditor
           name="definitionInput"
-          value={this.state.definitionInput}
+          value={definitionInput}
           onChange={this.handleDefinitionInputChange} />
 
         <BaseButton
           text={this.props.selectedReducer ? 'Save' : 'Add'}
-          style={{}}
+          disabled={!hasChanges}
           onClick={this.handleSave} />
 
         {this.props.selectedReducer ?
           <BaseButton
             text={'Cancel'}
             onClick={this.handleCancel} />
-          : null
+          : 
+          <BaseButton
+            text={'Clear'}
+            disabled={!hasChanges}
+            onClick={this.handleClear} />
         }
 
         
-      </div>
+      </fieldset>
     )
   }
 

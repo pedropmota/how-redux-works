@@ -9,17 +9,14 @@ import * as acorn from "acorn";
  */
 export function evaluateReducer(reducerDefinition, actionsInReducer) {
 
-  const bodyStartIndex = reducerDefinition.indexOf('{') + 1
+  reducerDefinition = tryAttachingActionDefinitions(reducerDefinition, actionsInReducer)
 
   //Inserts the action definition inside the reducer's body, to evaluate the action types
   const reducerFunction = (new Function(
-    ` return ${reducerDefinition.slice(0, bodyStartIndex)}
-      ${actionsInReducer.map(a => a.definition).join('')}
-      ${reducerDefinition.slice(bodyStartIndex)}
-      `
+    `return ${reducerDefinition.trim()}`
   ))()
 
-  //Runs the function to test it out:
+  //Runs the function to test it out (or throws exception):
   reducerFunction.call(null, null, { type: null })
 
   return reducerFunction;
@@ -52,17 +49,9 @@ export function validateReducer(reducerDefinition, actionsInReducer) {
 
 export function parseReducer(reducerString, actionsInReducer) {
 
-  const actionDefinitions = actionsInReducer ? actionsInReducer.map(a => a.definition).join('') : null
+  reducerString = tryAttachingActionDefinitions(reducerString, actionsInReducer);
 
-  if (actionDefinitions) {
-    const bodyStartIndex = reducerString.indexOf('{') + 1;
-    //Inserts the action definition inside the reducer's body, to evaluate the action types
-    reducerString = `${reducerString.slice(0, bodyStartIndex)}
-                     ${actionDefinitions}
-                     ${reducerString.slice(bodyStartIndex)}`;
-  }
-
-  const script = acorn.parse(reducerString, { ecmaVersion: 9 });
+  const script = acorn.parse(reducerString.trim(), { ecmaVersion: 9 });
 
   if (script.body.length !== 1)
     throw new Error(`Keep your reducer definition as a single function statement.`)
@@ -82,4 +71,28 @@ export function parseReducer(reducerString, actionsInReducer) {
     params: reducer.params.map(p => p.name)
   }
 
+}
+
+
+function tryAttachingActionDefinitions(reducerString, actions) {
+  try {
+    const actionDefinitions = actions ? actions.map(a => a.definition).join('') : null
+
+    const script = acorn.parse(reducerString.trim(), { ecmaVersion: 9 });
+
+    const isValidReducer = script.body.length === 1 && script.body[0].type === 'FunctionDeclaration';
+
+    if (!actionDefinitions || !isValidReducer) 
+      return reducerString;
+
+    const bodyStartIndex = reducerString.indexOf('{') + 1;
+    
+    //Inserts the action definition inside the reducer's body, to evaluate the action types
+    reducerString = `${reducerString.slice(0, bodyStartIndex)}
+                      ${actionDefinitions}
+                      ${reducerString.slice(bodyStartIndex)}`;
+
+  } finally {
+    return reducerString;
+  }
 }

@@ -1,7 +1,24 @@
+import * as actionParser from '../parsing/actionParser';
+
+
 //TODO: Test function-to-string in all browsers
+export const predefinedActions = [
+  { 
+    name: 'addPerson',
+    params: ['name', 'phoneNumber']
+  },
+  {
+    name: 'setDefaultCountry',
+    params: ['countryName']
+  }
+].map(a => ({ 
+  name: a.name,
+  definition: actionParser.getAutoDefinition(a.name, a.params)
+}))
+
 
 export const predefinedReducers = [{ 
-  entity: 'people',
+  name: 'people',
   actions: ['addPerson', 'editPerson'],
   definition: `
 function people(state = [], action) {
@@ -30,7 +47,7 @@ function people(state = [], action) {
 }`
 
 }, {
-  entity: 'devices',
+  name: 'devices',
   actions: ['addDevice', 'removeDevice'],
   definition: `
     function devices(state = [], action) {

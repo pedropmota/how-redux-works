@@ -1,5 +1,6 @@
 import React from "react";
 import Case from "case";
+import debounce from "debounce-promise";
 import { Container } from "semantic-ui-react";
 
 
@@ -16,17 +17,23 @@ const styles = {
   formInput: { display: 'block', margin: 'auto' }
 }
 
-
-//Create ActionForm component
 export default class ActionSection extends React.Component {
+
+  state = {
+    //Reference of the action to be edited.
+    selectedAction: null,
+
+    //Last action id added. When a new one is added, it automatically becomes the one being edited.
+    lastActionIdAdded: null,
+
+    //Becomes true the first time an action is added using the form.
+    didChangeInput: false
+  }
 
   constructor(props) {
     super(props)
 
-    this.state = {
-      selectedAction: null,
-      lastActionIdAdded: null
-    }
+    this.itemsPanelRef = React.createRef()
 
     this.handleSave = this.handleSave.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
@@ -37,7 +44,7 @@ export default class ActionSection extends React.Component {
   static getDerivedStateFromProps(props, state) {
     const lastAction = props.actions.length ? props.actions[props.actions.length - 1] : null
 
-    if (!lastAction || state.lastActionIdAdded === lastAction.id)
+    if (!state.didChangeInput || !lastAction || state.lastActionIdAdded === lastAction.id)
       return state
     
     return {
@@ -48,6 +55,21 @@ export default class ActionSection extends React.Component {
   }
 
 
+  saveAction = debounce((action) => {
+    if (!action.id) {
+      this.props.onAddAction(action)
+    
+      const itemsPanel = this.itemsPanelRef.current
+      itemsPanel.scrollTop = itemsPanel.scrollHeight
+    }
+    else
+      this.props.onEditAction(action)
+
+    if (!this.state.didChangeInput) {
+      this.setState({ didChangeInput: true })
+    }
+  }, 800)
+
 
   handleItemSelection(item) {
     this.setState({
@@ -56,15 +78,8 @@ export default class ActionSection extends React.Component {
   }
 
 
-  handleSave(action) {
-    if (!action.id)
-      this.props.onAddAction(action)
-    else
-      this.props.onEditAction(action)
-
-    this.setState({
-      selectedAction: null
-    })
+  async handleSave(action) {
+    await this.saveAction(action);
   }
 
   handleDelete(action) {
@@ -85,10 +100,12 @@ export default class ActionSection extends React.Component {
 
         <BaseItemsList
           items={this.props.actions}
-          getId={action => action.id}
-          getName={action => action.name}
-          getError={action => action.errorMessage}
-          getIsSelected={action => this.state.selectedAction && this.state.selectedAction.id === action.id}
+          title="Your action creators"
+          idProp={'id'}
+          nameProp={'name'}
+          errorProp={'errorMessage'}
+          selectedId={this.state.selectedAction ? this.state.selectedAction.id : null}
+          listRef={this.itemsPanelRef}
           handleItemSelection={this.handleItemSelection}
           handleItemDeletion={this.handleDelete} />
 

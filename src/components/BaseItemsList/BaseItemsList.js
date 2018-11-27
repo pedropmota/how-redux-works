@@ -1,48 +1,63 @@
 import React from "react";
 import './BaseItemsList.scss';
   
-export default function BaseItemsList({ items, getId, getName, getError, getIsSelected, handleItemSelection, handleItemDeletion }) {
-  
-  const isEmpty = !items.length
 
-  return (
-    <fieldset className={`items-list ${isEmpty ? 'empty' : ''}`}>
-      <legend>Your reducers</legend>
+class BaseItemsList extends React.Component {
 
-      {items.map((item) => {
-        const id = getId(item)
-        const name = getName(item)
-        const error = getError(item)
-        const isSelected = getIsSelected(item);
+  constructor(props) {
+    super(props)
+  }
 
-        return (
-          <div
-            key={id}
-            className={`items-list-item ${isSelected ? 'selected' : ''}`}>
-            
-            <span
-              className='items-list-name'
-              onClick={e => handleItemSelection(item)}>
-              {name || '(unnamed)'}
-              {isSelected ? '(editing)' : null}
-            </span>
-            
-            {error ?
+  //Turned into class component just to use ref and control the fieldset:
+  render() {
+
+    const { items, title, idProp, nameProp, errorProp, selectedId, handleItemSelection, handleItemDeletion, listRef, ...props } = this.props
+
+    return (
+      <fieldset 
+        className={`items-list ${!items.length ? 'empty' : ''}`}
+        ref={listRef}
+        {...props}>
+        
+        <legend>{title}</legend>
+
+        {items.map((item) => {
+          const id = item[idProp]
+          const name = item[nameProp]
+          const error = item[errorProp]
+          const isSelected = selectedId === id
+
+          return (
+            <div
+              key={id}
+              className={`items-list-item ${isSelected ? 'selected' : ''}`}>
+              
               <span
-                className='items-list-error'
-                title={error}
-                >(error)</span>
-              : null
-            }
+                className={`items-list-name`}
+                onClick={e => handleItemSelection(item)}>
+                {name || '(unnamed)'}
+                {isSelected ? '(editing)' : null}
+              </span>
+              
+              {error ?
+                <span
+                  className='items-list-error'
+                  title={error}
+                  >(error)</span>
+                : null
+              }
 
-            <button
-              className="items-list-delete"
-              onClick={e => handleItemDeletion(item)}>
-            Delete 
-            </button>
-          </div>
+              <button
+                className="items-list-delete"
+                onClick={e => handleItemDeletion(item)}>
+              Delete 
+              </button>
+            </div>
+          )}
         )}
-      )}
-    </fieldset>
-  )
+      </fieldset>
+    )
+  }
 }
+
+export default BaseItemsList;

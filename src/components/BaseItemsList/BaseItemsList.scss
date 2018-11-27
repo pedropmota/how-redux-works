@@ -29,6 +29,12 @@
     }
 
     
+    &.selected {
+      .items-list-name {
+        font-weight: bold;
+      }
+    }
+
 
     .items-list-name {
       flex-grow: 1;

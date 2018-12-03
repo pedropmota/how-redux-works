@@ -1,5 +1,7 @@
 import React from "react";
 import AceEditor from "react-ace"
+import 'brace/mode/javascript';
+import 'brace/theme/monokai'
 
 const BaseCodeEditor = ({ name, value, onChange, isReadOnly, ...props }) => 
   <AceEditor
@@ -23,7 +25,7 @@ const BaseCodeEditor = ({ name, value, onChange, isReadOnly, ...props }) =>
       tabSize: 2
     }}
     onLoad={ editor => {
-      editor.session.$worker.send('changeOptions', [{ asi: true }]) //Allows no semicolon 
+      editor.session.$worker && editor.session.$worker.send('changeOptions', [{ asi: true }]) //Allows no semicolon 
       editor.$blockScrolling = Infinity 
     }}
     {...props}/>

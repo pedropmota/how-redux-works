@@ -1,6 +1,6 @@
 import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, SET_ACTION_ERROR } from '../actions';
-import { validateAction } from "../parsing/actionParser";
-import { newUuid } from "../utils";
+import { validateAction } from "../utils/parsing/actionParser";
+import { newUuid } from "../utils/uuid";
 
 export function actions(state = [], action) {
   switch (action.type) {

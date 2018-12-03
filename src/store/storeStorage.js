@@ -3,7 +3,7 @@
 /**
  * The store is saved on the localStorage by version.
  */
-const storeVersion = '0.02';
+const storeVersion = '0.04';
 const storeKey = `current-store-v${storeVersion}`;
 
 export const getStoredState = function() {

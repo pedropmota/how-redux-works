@@ -1,4 +1,5 @@
 import * as acorn from "acorn";
+import Case from "case";
 
 /**
  * Evaluates the reducer function definition, by also considering its action definitions.
@@ -70,6 +71,27 @@ export function parseReducer(reducerString, actionsInReducer) {
     name: reducer.id.name,
     params: reducer.params.map(p => p.name)
   }
+
+}
+
+
+export function getAutoDefinition(name, actions) {
+  if (!name)
+    return '';
+
+  return `
+function ${Case.camel(name)}(state = [], action) {
+switch (action.type) {
+  ${actions.map(action =>
+  `case ${Case.constant(action.name)}:
+    //(modify it here to return a "reduced" (modified) version of the state, to fulfil the action:
+    return [...state]
+  
+  `).join('')}
+  default:
+    return state;
+}
+}`.trim()
 
 }
 

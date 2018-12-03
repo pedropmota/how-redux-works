@@ -1,23 +1,31 @@
 import React from "react";
-import Case from 'case';
+import PropTypes from "prop-types";
 
-import BaseInputText from "../BaseInputText/BaseInputText";
-import BaseCodeEditor from "../BaseCodeEditor/BaseCodeEditor";
-import BaseButton from "../BaseButton/BaseButton";
-import BaseDropdownGrouped from "../BaseDropdownGrouped/BaseDropdownGrouped";
-import { getAutoDefinition } from "../../parsing/actionParser";
-import { predefinedActions } from "../../constants/predefinedItems";
-
-
+import FormInputController from "../../shared/FormInputController/FormInputController";
+import BaseCodeEditor from "../../shared/BaseCodeEditor/BaseCodeEditor";
+import BaseButton from "../../shared/BaseButton/BaseButton";
+import BaseDropdownGrouped from "../../shared/BaseDropdownGrouped/BaseDropdownGrouped";
+import { getAutoDefinition } from "../../../utils/parsing/actionParser";
+import { predefinedActions } from "../../../constants/predefinedItems";
 
 export default class ActionsForm extends React.Component {
+
+  static propTypes = {
+    selectedAction: PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      definition: PropTypes.string
+    }).isRequired,
+
+    onSave: PropTypes.func.isRequired,
+
+    onClear: PropTypes.func.isRequired
+  }
 
   state = {
     nameInput: '',
     definitionInput: '',
-    predefinedSelected: null,
-
-    selectedActionReference: null
+    predefinedSelected: null
   }
 
   constructor(props) {
@@ -33,21 +41,20 @@ export default class ActionsForm extends React.Component {
     this.handlePredefinedSelection = this.handlePredefinedSelection.bind(this)
   }
   
-  static getDerivedStateFromProps(props, state) {
-    
-    if (state.selectedActionReference === props.selectedAction)
-      return state;
-
-    const { name, definition } = props.selectedAction || { }
-    
-    return {
-      ...state,
-      nameInput: name || '',
-      definitionInput: definition || '',
-      selectedActionReference: props.selectedAction
-    }
+  componentDidUpdate(prevProps) {
+    const hasNewActionSelected = this.props.selectedAction && this.props.selectedAction !== prevProps.selectedAction
+    if (hasNewActionSelected) 
+      this.fillFormWithSelectedAction()
   }
 
+  fillFormWithSelectedAction() {
+    const selectedAction = this.props.selectedAction
+    this.setState({
+      nameInput: selectedAction.name,
+      definitionInput: selectedAction.definition,
+      predefinedSelected: null
+    })
+  }
 
   tryUpdatingDefinition(newName) {
     const currentDefinition = this.state.definitionInput;
@@ -66,8 +73,6 @@ export default class ActionsForm extends React.Component {
       nameInput: value,
       definitionInput: definition
     })
-
-    this.handleSave(value, definition)
   }
 
 
@@ -75,16 +80,14 @@ export default class ActionsForm extends React.Component {
     this.setState({
       definitionInput: newValue
     })
-    
-    this.handleSave(this.state.nameInput, newValue)
   }
 
 
-  handleSave(name, definition, forceNew) {
+  handleSave(name, definition, id) {
     const action = {
-      name: name,
-      definition: definition,
-      id: this.props.selectedAction && !forceNew ? this.props.selectedAction.id : null
+      name: name || this.state.nameInput,
+      definition: definition || this.state.definitionInput,
+      id: id !== undefined ? id : this.props.selectedAction ? this.props.selectedAction.id : null
     }
 
     this.props.onSave(action);
@@ -97,7 +100,7 @@ export default class ActionsForm extends React.Component {
       predefinedSelected: null
     })
 
-    this.props.onCancel()
+    this.props.onClear()
   }
 
   handleInputKeyPress(e) {
@@ -108,53 +111,48 @@ export default class ActionsForm extends React.Component {
   handlePredefinedSelection({ label, value }) {
     const selected = predefinedActions.filter(a => a.name === value)[0]
 
-    this.setState((prevState, props) =>
-      selected ? ({
-        nameInput: selected.name,
-        definitionInput: selected.definition,
-        predefinedSelected: selected
-      }) : ({
-        predefinedSelected: null
-      })
-    )
-    
-    if (selected)
-      this.handleSave(selected.name, selected.definition, true)
-    
+    if (selected) {
+      this.handleSave(
+        selected.name,
+        selected.definition,
+        null //Id null to force new item
+      )
+    }
+
     this.textInputRef.current.focus()
   }
 
   
   getHasInputChanges() {
-    const { nameInput, definitionInput } = this.state;
     const { selectedAction } = this.props;
 
     if (!selectedAction)
-      return nameInput || definitionInput;
+      return this.state.nameInput || this.state.definitionInput;
     else
-      return selectedAction.name !== nameInput || selectedAction.definition !== definitionInput
+      return selectedAction.name !== this.state.nameInput || selectedAction.definition !== this.state.definitionInput
   }
-
 
 
   render() {
     const { nameInput, definitionInput, predefinedSelected } = this.state;
     const hasChanges = this.getHasInputChanges();
 
-    const groupedOptions = [
-      {
-        label: 'Action creator examples',
-        options: predefinedActions.map(r => ({ label: r.name, value: r.name }))
-      },
-      {
-        label: 'Create your own',
-        options: [{ label: 'Create your own action creators', value: '' }]
-      }
-    ]
+    const groupedOptions = [{
+      label: 'Action creator examples',
+      options: predefinedActions.map(r => ({ label: r.name, value: r.name }))
+    }, {
+      label: 'Create your own',
+      options: [{ label: 'Create your own action creators', value: '' }]
+    }]
 
     return (
       <div className="form">
       
+        <FormInputController
+          formValues={[ nameInput, definitionInput ]}
+          itemKeyBeingEdited={this.props.selectedAction ? this.props.selectedAction.id : null}
+          onEdit={this.handleSave} />
+
         <BaseDropdownGrouped
           value={predefinedSelected ? { label: predefinedSelected.name, value: predefinedSelected.name } : null}
           placeholder="Action creator examples"
@@ -175,17 +173,12 @@ export default class ActionsForm extends React.Component {
           <BaseButton
             text={'Ok'}
             onClick={this.handleClear} />
-
         </div>
 
         <BaseCodeEditor
           name="definitionInput"
           value={definitionInput}
           onChange={this.handleDefinitionInputChange} />
-
-
-
-
         
       </div>
     )

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { addAction, editAction, deleteAction } from "../actions";
-import ActionsSection from "../components/ActionsSection/ActionsSection";
+import ActionsSection from "../components/views/ActionsSection/ActionsSection";
 
 const mapStateToProps = state => ({
   actions: state.actions

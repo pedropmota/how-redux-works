@@ -1,4 +1,4 @@
-import * as actionParser from '../parsing/actionParser';
+import * as actionParser from '../utils/parsing/actionParser';
 
 
 //TODO: Test function-to-string in all browsers

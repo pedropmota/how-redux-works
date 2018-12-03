@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { dispatchAction, clearStore } from "../actions";
-import StoreSection from "../components/StoreSection/StoreSection";
+import StoreSection from "../components/views/StoreSection/StoreSection";
 
 const mapStateToProps = state => {
   const userStore = state.store ? state.store.userStore : null

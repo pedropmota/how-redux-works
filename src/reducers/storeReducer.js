@@ -1,7 +1,7 @@
 import { createStore, combineReducers } from "redux";
 import { UPDATE_STORE, DISPATCH_ACTION, CLEAR_STORE } from "../actions";
-import { evaluateReducer } from "../parsing/reducerParser";
-import { evaluateDispatch } from "../parsing/dispatchParser";
+import { evaluateReducer } from "../utils/parsing/reducerParser";
+import { evaluateDispatch } from "../utils/parsing/dispatchParser";
 
 export function store(state = null, action) {
 
@@ -71,7 +71,7 @@ function evalateUserReducers(reducers, actions) {
     const actionsInReducer = actions.filter(a => reducer.actions.includes(a.id))
     try {
       return evaluateReducer(reducer.definition, actionsInReducer)
-    } catch { }
+    } finally { return null }
   }).filter(r => r)
 
   if (!evaluatedReducers.length)

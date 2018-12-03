@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { addReducer, editReducer, deleteReducer, addAction } from "../actions";
-import ReducersSection from "../components/ReducersSection/ReducersSection";
+import ReducersSection from "../components/views/ReducersSection/ReducersSection";
 
 const mapStateToProps = state => ({
   reducers: state.reducers,

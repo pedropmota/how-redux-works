@@ -1,10 +1,8 @@
 import React from "react";
-import Case from 'case';
+import PropTypes from "prop-types";
 import beautify from "json-beautify";
 
-import Select from "react-select";
-import makeAnimated from "react-select/lib/animated";
-import BaseCodeEditor from "../BaseCodeEditor/BaseCodeEditor";
+import BaseCodeEditor from "../../shared/BaseCodeEditor/BaseCodeEditor";
 import { Container } from "semantic-ui-react";
 
 const styles = {
@@ -14,6 +12,14 @@ const styles = {
 
 export default class StoreContainer extends React.Component {
   
+  static propTypes = {
+    currentState: PropTypes.object.isRequired, 
+    dispatchedActions: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+    onDispatch: PropTypes.func.isRequired,
+    onClearStore: PropTypes.func.isRequired
+  }
+
   state = {
     dispatchInput: '',
     currentState: null
@@ -84,21 +90,11 @@ export default class StoreContainer extends React.Component {
         <BaseCodeEditor
           value={stateJson}
           isReadOnly={true}
-          style={{ marginBottom: '10px' }}
-          />
+          style={{ marginBottom: '10px' }} />
 
         <BaseCodeEditor
           value={actionsJson}
-          isReadOnly={true}
-          />
-
-
-        {/* <div 
-          className="currentState"
-          style={{ border: '1px solid gray' }}
-          >{
-              
-          }</div> */}
+          isReadOnly={true} />
 
       </Container>
     )

@@ -72,7 +72,7 @@ export function getAutoDefinition(name, paramNames = ['param1', 'param2']) {
 const ${constantName} = '${constantName}'
 
 function ${camelName}(${params}) {
-return { type: ${constantName}, ${params} }
+  return { type: ${constantName}, ${params} }
 }`
     .trim()
 

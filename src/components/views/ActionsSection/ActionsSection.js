@@ -5,6 +5,7 @@ import BaseItemsList from "../../shared/BaseItemsList/BaseItemsList";
 
 import ActionsForm from "./ActionsForm";
 import "./ActionsSection.scss";
+import SharedForm from "../../shared/SharedForm/SharedForm";
 
 export default class ActionSection extends React.Component {
 
@@ -86,8 +87,13 @@ export default class ActionSection extends React.Component {
           onItemDeletion={this.handleDelete} />
 
 
-        <ActionsForm
+        {/* <ActionsForm
           selectedAction={this.state.selectedAction}
+          onSave={this.handleSave}
+          onClear={this.handleClearSelection} /> */}
+        <SharedForm
+          formOf={'Actions'}
+          selectedItem={this.state.selectedAction}
           onSave={this.handleSave}
           onClear={this.handleClearSelection} />
 

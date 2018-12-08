@@ -69,6 +69,17 @@ describe("FormInputController", () => {
     expect(getCallsCount()).toBe(0)
   })
 
+  it("Does not call onEdit if all field values are empty", () => {
+    const component = newFormController();
+
+    const getCallsCount = () =>
+      component.instance().props.onEdit.mock.calls.length
+
+    component.setProps({ ...defaultProps, formValues: ['', '', null]})
+
+    expect(getCallsCount()).toBe(0)
+  })
+
 
   it("Uses 'debounceTime' prop on debounced 'handleEdit' method", () => {
     mockDebounceTime()

@@ -4,6 +4,9 @@ import debounce from "debounce-promise";
 
 const defaultDebounceTime = 800;
 
+/**
+ * Form Controller
+ */
 class FormInputController extends React.Component {
   static propTypes = {
     formValues: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -20,10 +23,12 @@ class FormInputController extends React.Component {
     const values = prevProps.formValues
     const newValues = this.props.formValues
     const didInputChange = values.length !== newValues.length || values.some((v, i) => v !== newValues[i])
+    const isAllValuesEmpty = newValues.every(value => !value) 
     
     const isSameItemKey = prevProps.itemKeyBeingEdited === this.props.itemKeyBeingEdited
 
-    if (didInputChange && isSameItemKey) {
+
+    if (didInputChange && isSameItemKey && !isAllValuesEmpty) {
       this.handleEdit()
     }
   }

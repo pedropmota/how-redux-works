@@ -1,3 +1,7 @@
+// *::selection {
+//   background-color: transparent;
+// }
+
 
 #root {
   height: 100%;
@@ -5,15 +9,27 @@
 
 .App {
   height: 100%;
-  background-color: #3a4149;
+  background-color: #e2e2e2; //#3a4149;
   
 
   .ui.container {
     background-color: white; //#1a1e27;
     margin: 0 12px !important;
     padding: 10px 14px;
-    border: 1px solid black;
-    border-radius: 3px;
+    border: 1px solid #b1b1b1;
+    border-radius: 6px;
+
+    &:nth-child(1) {
+      box-shadow: #909090 -1px 4px 7px 1px;
+    }
+    &:nth-child(2) {
+      box-shadow: #909090 0px 4px 7px 1px;
+    }
+    &:nth-child(3) {
+      box-shadow: #909090 1px 4px 7px 1px;
+    }
+
+
 
 
     h2 {
@@ -36,31 +52,53 @@
       box-shadow: #efefef 0px 0px 1px 1px;
       border: 1px solid #d2d2d2;
       padding: 9px 9px 12px;
-    }
+      
 
+      .input {
 
-    input[type='text'] {
-      background-color: white;
-      font-size: 19px;
-      padding: 8px 14px;
-      border: 1px solid #d8d8d8;
-      border-radius: 2px;
-      display: inline-block;
-      width: 100%;
-      margin: 8px auto;
+        margin: 4px auto;
 
-      &:focus {
-        box-shadow: rgba(206, 229, 253, 0.8) 0px 0px 3px 1px;
-        border: 1px solid #c1c0c0;
-        outline: none;
+        input[type='text'] {
+          background-color: white;
+          font-size: 19px;
+          padding: 8px 14px;
+          border: 1px solid #d8d8d8;
+          border-radius: 2px;
+          display: inline-block;
+          width: 100%;
+          
+          
+          transition: all 0.5s ease;
+
+          &:focus {
+            box-shadow: rgba(206, 229, 253, 0.8) 0px 0px 3px 1px;
+            border: 1px solid #c1c0c0;
+            outline: none;
+          }
+
+          &::selection {
+            background-color: transparent;
+          }
+        }
+
+        label {
+          color: #505050;
+          font-size: 12px;
+        }
       }
 
-      &::selection {
-        background-color: transparent;
+      button {
+        height: 38px;
+        margin-left: 5px;
+        border-radius: 4px;
+        padding: 0 24px;
+        margin-top: 24px;
+
+        &:focus {
+          outline:0;
+        }
       }
     }
-
-    
 
     
 
@@ -98,14 +136,15 @@
   }
 
   .App-header {
-    background-color: #282c34;
+    //background-color: #282c34;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
-    height: 130px;
+    height: 100px;
+    margin-bottom: 20px;
   }
 
   .App-link {

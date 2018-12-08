@@ -13,8 +13,8 @@ const styles = {
 export default class StoreContainer extends React.Component {
   
   static propTypes = {
-    currentState: PropTypes.object.isRequired, 
-    dispatchedActions: PropTypes.arrayOf(PropTypes.object).isRequired,
+    currentState: PropTypes.object, 
+    dispatchedActions: PropTypes.arrayOf(PropTypes.object),
 
     onDispatch: PropTypes.func.isRequired,
     onClearStore: PropTypes.func.isRequired

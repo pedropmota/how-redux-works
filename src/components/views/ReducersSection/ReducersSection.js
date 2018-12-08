@@ -6,6 +6,7 @@ import { predefinedActions } from "../../../constants/predefinedItems";
 import ReducersForm from "./ReducersForm";
 import { Container } from "semantic-ui-react";
 import "./ReducersSection.scss"
+import SharedForm from "../../shared/SharedForm/SharedForm";
 
 //TODO: 
 export default class ReducersSection extends React.Component {
@@ -58,6 +59,7 @@ export default class ReducersSection extends React.Component {
       })
     }
   }
+  
   handlePredefinedSelected(predefinedReducer) {
     const existingActions = this.props.actions;
     const actionsToAdd = predefinedActions.filter(p => 
@@ -103,12 +105,20 @@ export default class ReducersSection extends React.Component {
           onItemSelection={this.handleItemSelection}
           onItemDeletion={this.handleDelete} />
 
-        <ReducersForm
+        {/* <ReducersForm
           actions={this.props.actions}
           selectedReducer={this.state.selectedReducer}
           onSave={this.handleSave}
           onClear={this.handleCancelSelection}
-          onPredefinedSelected={this.handlePredefinedSelected} />
+          onPredefinedSelected={this.handlePredefinedSelected} /> */}
+
+          <SharedForm
+            formOf={'Reducers'}
+            selectedItem={this.state.selectedReducer}
+            actions={this.props.actions}
+            onSave={this.handleSave}
+            onClear={this.handleCancelSelection}
+            onPredefinedSelected={this.handleCancelSelection} />
 
       </Container>
     )

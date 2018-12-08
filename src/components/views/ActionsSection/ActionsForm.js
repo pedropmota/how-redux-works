@@ -153,33 +153,45 @@ export default class ActionsForm extends React.Component {
           itemKeyBeingEdited={this.props.selectedAction ? this.props.selectedAction.id : null}
           onEdit={this.handleSave} />
 
-        <BaseDropdownGrouped
-          value={predefinedSelected ? { label: predefinedSelected.name, value: predefinedSelected.name } : null}
-          placeholder="Action creator examples"
-          groupedOptions={groupedOptions}
-          onChange={this.handlePredefinedSelection} />
+        <div className="input">
+          <label>Examples</label>
+
+          <BaseDropdownGrouped
+            value={predefinedSelected ? { label: predefinedSelected.name, value: predefinedSelected.name } : null}
+            placeholder="Action creator examples"
+            groupedOptions={groupedOptions}
+            onChange={this.handlePredefinedSelection} />
+        </div>
+
 
         <div style={{ display: 'flex' }}>
-          <input
-            type="text"
-            name="nameInput"
-            value={nameInput}
-            ref={this.textInputRef}
-            onChange={this.handleNameInputChange}
-            onKeyPress={this.handleInputKeyPress}
-            placeholder={!hasChanges ? `Type your action name to auto-generate it` : `Action name`}
-            style={{ flexGrow: 1 }} />
+
+          <div className="input" style={{ flexGrow: 1 }}>
+            <label for="nameInput">Action creator name</label>
+            <input
+              type="text"
+              name="nameInput"
+              value={nameInput}
+              ref={this.textInputRef}
+              onChange={this.handleNameInputChange}
+              onKeyPress={this.handleInputKeyPress}
+              placeholder={!hasChanges ? `Type your action name to auto-generate it` : `Action name`}
+              style={{ flexGrow: 1 }} />
+          </div>
 
           <BaseButton
             text={'Ok'}
             onClick={this.handleClear} />
         </div>
 
-        <BaseCodeEditor
-          name="definitionInput"
-          value={definitionInput}
-          onChange={this.handleDefinitionInputChange} />
-        
+        <div className="input">
+          <label>Code</label>
+          <BaseCodeEditor
+            name="definitionInput"
+            value={definitionInput}
+            onChange={this.handleDefinitionInputChange} />
+        </div>
+
       </div>
     )
   }

@@ -5,7 +5,9 @@ import debounce from "debounce-promise";
 const defaultDebounceTime = 800;
 
 /**
- * Form Controller
+ * Form Input Controller. 
+ * This component fires the "onEdit" prop when formValues change. 
+ * Uses debounce to prevent multiple consecutive calls.
  */
 class FormInputController extends React.Component {
   static propTypes = {

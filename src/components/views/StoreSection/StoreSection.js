@@ -21,8 +21,7 @@ export default class StoreContainer extends React.Component {
   }
 
   state = {
-    dispatchInput: '',
-    currentState: null
+    dispatchInput: ''
   }
 
   constructor(props) {
@@ -45,6 +44,9 @@ export default class StoreContainer extends React.Component {
   handleDispatch() {
     const input = this.state.dispatchInput
 
+    if (!input || !this.props.currentState)
+      return
+
     this.props.onDispatch({
       input, 
       currentActions: this.props.currentActions
@@ -66,14 +68,17 @@ export default class StoreContainer extends React.Component {
       <Container>
         <h2>Store</h2>
 
-        <input
-          type="text"
-          value={styles.formInput}
-          value={this.state.dispatchInput}
-          name="dispatchInput"
-          onChange={this.handleInputChange}
-          placeholder="Dispatch an action"
-          />
+        <div className="input">
+          <label>Dispatch an action</label>
+        
+          <input
+            type="text"
+            value={this.state.dispatchInput}
+            name="dispatchInput"
+            onChange={this.handleInputChange}
+            placeholder="Dispatch an action"
+            />
+        </div>
 
         <button
           style={styles.formInput}
@@ -81,20 +86,30 @@ export default class StoreContainer extends React.Component {
           Dispatch
         </button>
 
-        <button
+        {/* <button
           style={styles.formInput}
           onClick={this.handleClear}>
           Clear Store
-        </button>
+        </button> */}
 
-        <BaseCodeEditor
-          value={stateJson}
-          isReadOnly={true}
-          style={{ marginBottom: '10px' }} />
 
-        <BaseCodeEditor
-          value={actionsJson}
-          isReadOnly={true} />
+        <div className="input">
+          <label>Your current store's state</label>
+
+          <BaseCodeEditor
+            value={stateJson}
+            isReadOnly={true}
+            style={{ marginBottom: '10px' }} />
+
+        </div>
+
+        <div className="input">
+          <label>Actions dispatched by you</label>
+
+          <BaseCodeEditor
+            value={actionsJson}
+            isReadOnly={true} />
+          </div>
 
       </Container>
     )

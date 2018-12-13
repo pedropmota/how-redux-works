@@ -41,12 +41,17 @@ class BaseItemsList extends React.Component {
     const { items, title, selectedId, onItemSelection, onItemDeletion, ...props } = this.props
     
     return (
-      <fieldset 
+      <div
         className={`items-list ${!items.length ? 'empty' : ''}`}
         ref={this.panelRef}
         {...props}>
         
-        <legend>{title}</legend>
+        <span className="title">{title}</span>
+
+        {!items.length ?
+          <div>
+            (Your items will be listed here.)
+          </div> : null}
 
         {items.map((item) => {
           const isSelected = item.id === selectedId
@@ -78,7 +83,7 @@ class BaseItemsList extends React.Component {
             </div>
           )}
         )}
-      </fieldset>
+      </div>
     )
   }
 }

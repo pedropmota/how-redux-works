@@ -1,10 +1,12 @@
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from "redux-saga";
 import reducers from '../reducers';
-import { addReducer, editAction, deleteReducer, updateStore, UPDATE_STORE, DISPATCH_ACTION } from "../actions";
-import { userStoreUpdater } from "./userStoreUpdater";
-import { reducerRevalidator } from "./reducerRevalidator";
+import { userStoreUpdater } from "./middlewares/userStoreUpdater";
+import { reducerRevalidator } from "./middlewares/reducerRevalidator";
+import { predefinedItemsAutoFiller } from './middlewares/predefinedItemsAutoFiller';
+import { newItemsAutoSelector } from './middlewares/newItemsAutoSelector';
 import { getStoredState, storeState } from "./storeStorage";
+
 
 
 const sagaMiddleware = createSagaMiddleware();
@@ -23,7 +25,8 @@ const store = storedState ?
   createStore(reducers, storedState, middlewares) :
   createStore(reducers, middlewares);
 
-
+sagaMiddleware.run(newItemsAutoSelector)
+sagaMiddleware.run(predefinedItemsAutoFiller)
 sagaMiddleware.run(reducerRevalidator)
 sagaMiddleware.run(userStoreUpdater)
 

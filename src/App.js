@@ -10,10 +10,12 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          <h2>HOW_REDUX_WORKS</h2>
+          <h4>An interactive tutorial of Redux and the Flux pattern.</h4>
         </header>
 
-        <div style={{display: 'flex'}}>
+        <div className="App-main-container">
 
           <ActionContainer />
           
@@ -22,6 +24,10 @@ class App extends Component {
           <StoreContainer />
         
         </div>
+
+        <footer className="App-footer">
+          Footer content
+        </footer>
       </div>
     );
   }

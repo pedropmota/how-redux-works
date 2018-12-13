@@ -1,24 +1,28 @@
 import { connect } from "react-redux";
-import { addReducer, editReducer, deleteReducer, addAction } from "../actions";
+import { addReducer, editReducer, deleteReducer, addAction, setSelectedReducer } from "../actions";
 import ReducersSection from "../components/views/ReducersSection/ReducersSection";
 
 const mapStateToProps = state => ({
   reducers: state.reducers,
-  actions: state.actions
+  actions: state.actions,
+  selectedReducerId: state.selectedItems.reducer
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddReducer: ({ name, definition, actions }) => {
+  addReducer: ({ name, definition, actions }) => {
     dispatch(addReducer(name, definition, actions))
   },
-  onEditReducer: ({ id, name, definition, actions }) => {
+  editReducer: ({ id, name, definition, actions }) => {
     dispatch(editReducer(id, name, definition, actions))
   },
-  onDeleteReducer: (id) => {
+  deleteReducer: (id) => {
     dispatch(deleteReducer(id))
   },
-  onAddAction: ({ name, definition }) => {
+  addAction: ({ name, definition }) => {
     dispatch(addAction(name, definition))
+  },
+  setSelectedReducer: (id) => {
+    dispatch(setSelectedReducer(id))
   }
 })
 

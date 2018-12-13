@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Container } from "semantic-ui-react";
 import BaseItemsList from "../../shared/BaseItemsList/BaseItemsList";
-
-import ActionsForm from "./ActionsForm";
-import "./ActionsSection.scss";
 import SharedForm from "../../shared/SharedForm/SharedForm";
+import "./ActionsSection.scss";
+import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 
 export default class ActionSection extends React.Component {
 
@@ -16,17 +15,18 @@ export default class ActionSection extends React.Component {
       definition: PropTypes.definition
     })).isRequired,
 
-    onAddAction: PropTypes.func.isRequired,
+    selectedActionId: PropTypes.string,
 
-    onEditAction: PropTypes.func.isRequired,
+    addAction: PropTypes.func.isRequired,
 
-    onDeleteAction: PropTypes.func.isRequired
+    editAction: PropTypes.func.isRequired,
+
+    deleteAction: PropTypes.func.isRequired,
+
+    setSelectedAction: PropTypes.func.isRequired
   }
 
-  state = {
-    //Reference of the action to be edited.
-    selectedAction: null
-  }
+  state = { }
 
   constructor(props) {
     super(props)
@@ -37,63 +37,50 @@ export default class ActionSection extends React.Component {
     this.handleClearSelection = this.handleClearSelection.bind(this)
   }
 
-  componentDidUpdate(prevProps) {
-    const hasNewItem = this.props.actions.length > prevProps.actions.length
-
-    if (hasNewItem) {
-      const newItem = this.props.actions[this.props.actions.length - 1]
-      this.setState({
-        selectedAction: newItem
-      })
-    }
-  }
-
   handleSave(action) {
     if (!action.id) 
-      this.props.onAddAction(action)
+      this.props.addAction(action)
     
     else
-      this.props.onEditAction(action)
+      this.props.editAction(action)
   }
 
-
   handleItemSelection(item) {
-    this.setState({
-      selectedAction: this.props.actions.filter(a => a.id === item.id)[0]
-    })
+    this.props.setSelectedAction(item.id)
   }
 
   handleDelete(action) {
-    this.props.onDeleteAction(action.id);
+    this.props.deleteAction(action.id);
   }
 
   handleClearSelection() {
-    this.setState({
-      selectedAction: null
-    })
+    this.props.setSelectedAction(null)
   }
 
 
   render() {
     return (
       <Container className="actions-section">
-        <h2>Action Creators</h2>
+        <h2>
+          Action Creators
+          {/* <TutorialModal
+            pages={[
+              <div>Content page 1</div>,
+              <div>Content page 2</div>
+            ]}
+            /> */}
+        </h2>
 
         <BaseItemsList
           items={this.props.actions}
           title="Your action creators"
-          selectedId={this.state.selectedAction ? this.state.selectedAction.id : null}
+          selectedId={this.props.selectedActionId}
           onItemSelection={this.handleItemSelection}
           onItemDeletion={this.handleDelete} />
 
-
-        {/* <ActionsForm
-          selectedAction={this.state.selectedAction}
-          onSave={this.handleSave}
-          onClear={this.handleClearSelection} /> */}
         <SharedForm
           formOf={'Actions'}
-          selectedItem={this.state.selectedAction}
+          selectedItem={this.props.actions.filter(a => a.id === this.props.selectedActionId)[0] || null}
           onSave={this.handleSave}
           onClear={this.handleClearSelection} />
 

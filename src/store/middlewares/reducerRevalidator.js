@@ -1,5 +1,5 @@
 import { select, put, takeEvery } from "redux-saga/effects";
-import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers } from "../actions";
+import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers } from "../../actions";
 
 
 

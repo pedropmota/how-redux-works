@@ -25,10 +25,10 @@ function people(state = [], action) {
   switch (action.type) {
     case ADD_PERSON:
       return [...state, {
-        firstName: action.firstName,
-        lastName: action.lastName
+        name: action.name,
+        phoneNumber: action.phoneNumber
       }]
-    
+    /*
     case EDIT_PERSON:
       return state.map((item, index) => { 
         if (index !== action.index)
@@ -40,11 +40,11 @@ function people(state = [], action) {
           lastName: action.lastName
         }
       })
-
+    */
     default:
       return state;
   }
-}`
+}`.trim()
 
 }, {
   name: 'devices',

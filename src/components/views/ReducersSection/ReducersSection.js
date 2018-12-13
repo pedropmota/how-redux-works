@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import BaseItemsList from "../../shared/BaseItemsList/BaseItemsList";
 
 import { predefinedActions } from "../../../constants/predefinedItems";
-import ReducersForm from "./ReducersForm";
 import { Container } from "semantic-ui-react";
 import "./ReducersSection.scss"
 import SharedForm from "../../shared/SharedForm/SharedForm";
@@ -19,24 +18,26 @@ export default class ReducersSection extends React.Component {
       actions: PropTypes.arrayOf(PropTypes.string)
     })).isRequired,
 
+    selectedReducerId: PropTypes.string,
+
     actions: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
       definition: PropTypes.definition
     })).isRequired,
 
-    onAddReducer: PropTypes.func.isRequired,
+    addReducer: PropTypes.func.isRequired,
 
-    onEditReducer: PropTypes.func.isRequired,
+    editReducer: PropTypes.func.isRequired,
 
-    onDeleteReducer: PropTypes.func.isRequired,
+    deleteReducer: PropTypes.func.isRequired,
 
-    onAddAction: PropTypes.func
+    addAction: PropTypes.func,
+
+    setSelectedReducer: PropTypes.func.isRequired
   }
 
-  state = {
-    selectedReducer: null
-  }
+  state = { }
 
   constructor(props) {
     super(props);
@@ -44,52 +45,26 @@ export default class ReducersSection extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleItemSelection = this.handleItemSelection.bind(this);
-    this.handleCancelSelection = this.handleCancelSelection.bind(this);
-    this.handlePredefinedSelected = this.handlePredefinedSelected.bind(this);
-  }
-
-  //TODO: Handle actions added for a predefined reducer
-  componentDidUpdate(prevProps) {
-    const hasNewItem = this.props.reducers.length > prevProps.reducers.length
-
-    if (hasNewItem) {
-      const newItem = this.props.reducers[this.props.reducers.length - 1]
-      this.setState({
-        selectedReducer: newItem
-      })
-    }
-  }
-  
-  handlePredefinedSelected(predefinedReducer) {
-    const existingActions = this.props.actions;
-    const actionsToAdd = predefinedActions.filter(p => 
-      predefinedReducer.actions.includes(p.name) && !existingActions.some(a => a.name === p.name))
-
-    actionsToAdd.forEach(action =>
-      this.props.onAddAction(action))
+    this.handleCancelSelection = this.handleCancelSelection.bind(this);   
   }
   
   handleItemSelection(item) {
-    this.setState({
-      selectedReducer: this.props.reducers.filter(r => r.id === item.id)[0]
-    })
+    this.props.setSelectedReducer(item.id)
   }
 
   handleSave(reducer) {
     if (!reducer.id)
-      this.props.onAddReducer(reducer)
+      this.props.addReducer(reducer)
     else
-      this.props.onEditReducer(reducer);
+      this.props.editReducer(reducer);
   }
 
   handleDelete(reducer) {
-    this.props.onDeleteReducer(reducer.id);
+    this.props.deleteReducer(reducer.id);
   }
 
   handleCancelSelection() {
-    this.setState({
-      selectedReducer: null
-    })
+    this.props.setSelectedReducer(null)
   }
 
   render() {
@@ -101,24 +76,16 @@ export default class ReducersSection extends React.Component {
         <BaseItemsList
           items={this.props.reducers}
           title="Your reducers"
-          selectedId={this.state.selectedReducer ? this.state.selectedReducer.id : null}
+          selectedId={this.props.selectedReducerId}
           onItemSelection={this.handleItemSelection}
           onItemDeletion={this.handleDelete} />
 
-        {/* <ReducersForm
-          actions={this.props.actions}
-          selectedReducer={this.state.selectedReducer}
-          onSave={this.handleSave}
-          onClear={this.handleCancelSelection}
-          onPredefinedSelected={this.handlePredefinedSelected} /> */}
-
           <SharedForm
             formOf={'Reducers'}
-            selectedItem={this.state.selectedReducer}
+            selectedItem={this.props.reducers.filter(r => r.id === this.props.selectedReducerId)[0] || null}
             actions={this.props.actions}
             onSave={this.handleSave}
-            onClear={this.handleCancelSelection}
-            onPredefinedSelected={this.handleCancelSelection} />
+            onClear={this.handleCancelSelection} />
 
       </Container>
     )

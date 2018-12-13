@@ -4,12 +4,16 @@ import Select from "react-select";
 import makeAnimated from "react-select/lib/animated";
 
 const dropdownStyles = {
+  control: style => ({
+    ...style,
+    fontSize: '16px'
+  }),
   menu: style => ({
     ...style,
+    fontSize: '14px',
     zIndex: 99999
   })
 }
-
 
 
 const groupStyles = {
@@ -33,7 +37,7 @@ const groupBadgeStyles = {
 const formatGroupLabel = data => (
   <div style={groupStyles}>
     <span>{data.label}</span>
-    <span style={groupBadgeStyles}>{data.options.length}</span>
+    {/* <span style={groupBadgeStyles}>{data.options.length}</span> */}
   </div>
 );
 

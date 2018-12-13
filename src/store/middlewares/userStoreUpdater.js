@@ -1,4 +1,4 @@
-import { updateStore, ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from "../actions";
+import { updateStore, ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from "../../actions";
 import { takeEvery, put, select } from "redux-saga/effects";
 
 export const userStoreUpdater = function* () {

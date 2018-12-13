@@ -95,7 +95,7 @@ export default class SharedForm extends React.Component {
   
 
   componentDidUpdate(prevProps) {
-    const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem !== prevProps.selectedItem
+    const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
     if (hasNewItemSelected) 
       this.fillFormWithSelectedItem()
   }
@@ -147,8 +147,12 @@ export default class SharedForm extends React.Component {
   }
 
   handleInputKeyPress(e) {
+    if (!this.state.nameInput && !this.state.definitionInput && !this.state.selectedActions.length)
+      return
+
     if (e.key === 'Enter' && e.target.value)
-      this.handleSave()
+      this.handleClear()
+    
   }
 
   handleSave({ name, definition, actions, id } = { }) {
@@ -163,6 +167,9 @@ export default class SharedForm extends React.Component {
   }
 
   handleClear() {
+    if (!this.state.nameInput && !this.state.definitionInput && !this.state.selectedActions.length)
+      return
+
     this.handleSave()
 
     this.setState({
@@ -203,12 +210,15 @@ export default class SharedForm extends React.Component {
       this.props.actions.filter(a => predefinedReducerSelected.actions.includes(a.name))
 
     return (
-      <BaseDropdownMulti
-        options={this.props.actions.map(a => ({ label: a.name, value: a.id }))}
-        value={selectedActionsToDisplay.map(a => ({ label: a.name, value: a.id }))}
-        disabled={!!predefinedReducerSelected}
-        onChange={this.handleActionsChange}
-        placeholder={this.labels.actionsLabel} />
+      <div className="input">
+        <label>Actions</label>
+        <BaseDropdownMulti
+          options={this.props.actions.map(a => ({ label: a.name, value: a.id }))}
+          value={selectedActionsToDisplay.map(a => ({ label: a.name, value: a.id }))}
+          disabled={!!predefinedReducerSelected}
+          onChange={this.handleActionsChange}
+          placeholder={this.labels.actionsLabel} />
+      </div>
     )
   }
 
@@ -220,10 +230,11 @@ export default class SharedForm extends React.Component {
     const groupedOptions = [{
       label: this.labels.examplesPlaceholder,
       options: this.predefinedItems.map(r => ({ label: r.name, value: r.name }))
-    }, {
-      label: 'Create your own',
-      options: [{ label: this.labels.examplesCreateNew, value: '' }]
-    }]
+    }, //{
+    //   label: 'Create your own',
+    //   options: [{ label: this.labels.examplesCreateNew, value: '' }]
+    // }
+  ]
     
     
     
@@ -269,12 +280,15 @@ export default class SharedForm extends React.Component {
           this.renderActionsDropdown() : 
           null}
        
+       <div className="input">
+          <label>Code</label>
 
-        <BaseCodeEditor
-          name="definitionInput"
-          value={definitionInput}
-          onChange={this.handleDefinitionInputChange} />
-
+          <BaseCodeEditor
+            name="definitionInput"
+            value={definitionInput}
+            onChange={this.handleDefinitionInputChange} />
+      </div>
+        
 
         
       </div>

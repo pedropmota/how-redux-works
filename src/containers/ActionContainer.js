@@ -1,20 +1,24 @@
 import { connect } from "react-redux";
-import { addAction, editAction, deleteAction } from "../actions";
+import { addAction, editAction, deleteAction, setSelectedAction } from "../actions";
 import ActionsSection from "../components/views/ActionsSection/ActionsSection";
 
 const mapStateToProps = state => ({
-  actions: state.actions
+  actions: state.actions,
+  selectedActionId: state.selectedItems.action
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddAction: ({ name, definition }) => {
+  addAction: ({ name, definition }) => {
     dispatch(addAction(name, definition))
   },
-  onEditAction: ({ id, name, definition }) => {
+  editAction: ({ id, name, definition }) => {
     dispatch(editAction(id, name, definition))
   },
-  onDeleteAction: (id) => {
+  deleteAction: (id) => {
     dispatch(deleteAction(id))
+  },
+  setSelectedAction: (id) => {
+    dispatch(setSelectedAction(id))
   }
 })
 

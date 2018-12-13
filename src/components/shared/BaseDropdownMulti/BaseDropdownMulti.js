@@ -3,27 +3,24 @@ import Select from "react-select";
 import makeAnimated from "react-select/lib/animated";
 import PropTypes from "prop-types";
 
-const whiteBackground = { backgroundColor: 'yellow' }
-
 const dropdownStyles = {
 
   control: styles => ({ 
     ...styles, 
+    fontSize: '16px'
     //...whiteBackground 
   }),
 
   options: (styles, { data, isDisabled, isFocused, isSelected }) => {
     
     return {
-      ...styles,
-      //...whiteBackground
+      ...styles
     }
   },
 
   multiValue: (styles, { data }) => {
     return {
-      ...styles,
-      //...whiteBackground
+      ...styles
     };
   },
 

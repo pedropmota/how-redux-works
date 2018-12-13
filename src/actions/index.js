@@ -15,6 +15,9 @@ export const UPDATE_STORE = 'UPDATE_STORE'
 export const DISPATCH_ACTION = 'DISPATCH_ACTION'
 export const CLEAR_STORE = 'CLEAR_STORE'
 
+export const SET_SELECTED_ACTION = 'SET_SELECTED_ACTION'
+export const SET_SELECTED_REDUCER = 'SET_SELECTED_REDUCER'
+
 /**
  * action creators
  */
@@ -48,6 +51,14 @@ export function revalidateReducers(affectedActionId, allActions) {
   return { type: REVALIDATE_REDUCERS, affectedActionId, allActions }
 }
 
+
+export function setSelectedAction(id) {
+  return { type: SET_SELECTED_ACTION, id }
+}
+
+export function setSelectedReducer(id) {
+  return { type: SET_SELECTED_REDUCER, id }
+}
 
 
 export function updateStore(reducers, actions) {

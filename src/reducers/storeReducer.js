@@ -30,13 +30,13 @@ export function store(state = null, action) {
         userStore: userStore
       }
       
-      //TODO The immutable logic to create new store every time needs to run all actions previously executed, to maintain state.
-      //Or, we can maintain the history of the user's state in the state, in a separate prop.
+      //TODO The immutable logic to create new store every time could run all actions previously executed, to maintain state.
+      //Or, we can maintain the history of the user's state in the state, as a separate prop.
 
     case DISPATCH_ACTION:
       
       if (!state || !state.userStore)
-        throw Error(`Action cannot be dispatched if the store's store is null`)
+        throw Error(`Action cannot be dispatched if the user's store is null`)
       
       const evaluatedInput = evaluateDispatch(action.input, action.currentActions)
 
@@ -64,14 +64,14 @@ export function store(state = null, action) {
 function evalateUserReducers(reducers, actions) {
   if (!reducers || !reducers.length || !actions)
     return null;
-
+  
   const validReducers = reducers.filter(r => !r.errorMessage)
 
   const evaluatedReducers = validReducers.map(reducer => {
     const actionsInReducer = actions.filter(a => reducer.actions.includes(a.id))
     try {
       return evaluateReducer(reducer.definition, actionsInReducer)
-    } finally { return null }
+    } catch { return null }
   }).filter(r => r)
 
   if (!evaluatedReducers.length)

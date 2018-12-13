@@ -4,7 +4,7 @@ import { Container } from "semantic-ui-react";
 import BaseItemsList from "../../shared/BaseItemsList/BaseItemsList";
 import SharedForm from "../../shared/SharedForm/SharedForm";
 import "./ActionsSection.scss";
-import TutorialModal from "../../shared/TutorialModal/TutorialModal";
+//import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 
 export default class ActionSection extends React.Component {
 

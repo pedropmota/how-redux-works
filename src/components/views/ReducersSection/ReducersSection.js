@@ -55,12 +55,17 @@ export default class ReducersSection extends React.Component {
   handleSave(reducer) {
     if (!reducer.id)
       this.props.addReducer(reducer)
-    else
-      this.props.editReducer(reducer);
+    else {
+      this.props.editReducer(reducer)
+      this.props.setSelectedReducer(null)
+    }
   }
 
   handleDelete(reducer) {
-    this.props.deleteReducer(reducer.id);
+    this.props.deleteReducer(reducer.id)
+
+    if (this.props.selectedReducerId === reducer.id)
+      this.props.setSelectedReducer(null)
   }
 
   handleCancelSelection() {

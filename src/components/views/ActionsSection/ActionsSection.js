@@ -42,8 +42,10 @@ export default class ActionSection extends React.Component {
     if (!action.id) 
       this.props.addAction(action)
     
-    else
+    else {
       this.props.editAction(action)
+      this.props.setSelectedAction(null)
+    }
   }
 
   handleItemSelection(item) {

@@ -2,6 +2,12 @@ import { select, put, takeEvery } from "redux-saga/effects";
 import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers } from "../../actions";
 
 
+/**
+ * TODO:
+ * If decided to move actions away from reducers, this middleware will need refactoring.
+ * And it'll probably be best to have all reducers' validations coming from here.
+ */
+
 
 export const reducerRevalidator = function* () {
   yield [
@@ -16,6 +22,9 @@ function* runRevalidateReducers(action) {
 
   yield put(revalidateReducers(affectedActionId, allActions))
 }
+
+
+
 
 
 

@@ -1,0 +1,58 @@
+.ui.dimmer {
+  background-color: rgba(14, 14, 14, 0.75);
+}
+
+.tutorialModal {
+
+  .nav-buttons {
+    text-align: center;
+    
+    .nav {
+
+      margin: 0 3px;
+      transition: all 0.2s ease;
+
+      &:not(.disabled) {
+        &:hover {
+          
+          cursor: pointer;
+
+          &.button {
+            border-bottom: 1px solid lightskyblue;
+          }
+        }
+      }
+
+      &.disabled {
+        pointer-events: none;
+        color: gray;
+      }
+
+      &.page {
+        font-size: 19px;
+      }
+
+      &.button {
+
+      }
+    }
+  }
+
+  .pages-container {
+    position: relative;
+
+    // .page {
+
+    //   position: absolute;
+    //   opacity: 0;
+    //   height: 0;
+
+
+    //   &.current {
+    //     opacity: 1;
+    //     height: 100%;
+    //   }
+    // }
+  }
+
+}

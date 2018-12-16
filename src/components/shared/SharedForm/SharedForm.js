@@ -95,18 +95,20 @@ export default class SharedForm extends React.Component {
   
 
   componentDidUpdate(prevProps) {
-    const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
+    // const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
+    const hasNewItemSelected = (this.props.selectedItem && this.props.selectedItem.id) !== (prevProps.selectedItem && prevProps.selectedItem.id)
+
     if (hasNewItemSelected) 
       this.fillFormWithSelectedItem()
   }
 
   fillFormWithSelectedItem() {
-    const selectedItem = this.props.selectedItem
+    const selectedItem = this.props.selectedItem || { }
 
     this.setState({
-      nameInput: selectedItem.name,
-      definitionInput: selectedItem.definition,
-      selectedActions: this.isOfReducers ? this.props.actions.filter(a => selectedItem.actions.some(s => s === a.id)) : [],
+      nameInput: selectedItem.name || '',
+      definitionInput: selectedItem.definition || '',
+      selectedActions: this.isOfReducers && this.props.actions ? this.props.actions.filter(a => selectedItem.actions.some(s => s === a.id)) : [],
       predefinedSelected: null
     })
   }
@@ -225,6 +227,8 @@ export default class SharedForm extends React.Component {
   render() {
 
     const { nameInput, definitionInput, predefinedSelected, selectedActions } = this.state
+    const { selectedItem } = this.props
+
     const isInputEmpty = !nameInput && !definitionInput
 
     const groupedOptions = [{
@@ -244,7 +248,7 @@ export default class SharedForm extends React.Component {
 
         <FormInputController
           formValues={[ nameInput, definitionInput, ...selectedActions.map(a => a.id) ]}
-          itemKeyBeingEdited={this.props.selectedReducer ? this.props.selectedReducer.id : null}
+          itemKeyBeingEdited={selectedItem ? selectedItem.id : null}
           onEdit={this.handleSave} />
 
 

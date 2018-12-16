@@ -5,6 +5,7 @@ import BaseItemsList from "../../shared/BaseItemsList/BaseItemsList";
 import SharedForm from "../../shared/SharedForm/SharedForm";
 import "./ActionsSection.scss";
 import TutorialModal from "../../shared/TutorialModal/TutorialModal";
+import actionTutorialPages from "./actionTutorials";
 
 export default class ActionSection extends React.Component {
 
@@ -51,6 +52,9 @@ export default class ActionSection extends React.Component {
 
   handleDelete(action) {
     this.props.deleteAction(action.id);
+
+    if (this.props.selectedActionId === action.id)
+      this.props.setSelectedAction(null)
   }
 
   handleClearSelection() {
@@ -63,12 +67,9 @@ export default class ActionSection extends React.Component {
       <Container className="actions-section">
         <h2>
           Action Creators
-          {/* <TutorialModal
-            pages={[
-              <div>Content page 1</div>,
-              <div>Content page 2</div>
-            ]}
-            /> */}
+          <TutorialModal
+            pages={actionTutorialPages}
+            />
         </h2>
 
         <BaseItemsList

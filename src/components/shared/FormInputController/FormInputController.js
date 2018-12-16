@@ -29,6 +29,7 @@ class FormInputController extends React.Component {
     
     const isSameItemKey = prevProps.itemKeyBeingEdited === this.props.itemKeyBeingEdited
 
+    console.log('updating ', values, newValues, didInputChange, isSameItemKey)
 
     if (didInputChange && isSameItemKey && !isAllValuesEmpty) {
       this.handleEdit()

@@ -1,24 +1,33 @@
 // *::selection {
 //   background-color: transparent;
 // }
+button:focus {
+  outline:0;
+}
 
+body {
+  background-color: #e2e2e2; //#3a4149;
+}
 
 #root {
   height: 100%;
 }
 
+
 .App {
   height: 100%;
-  background-color: #e2e2e2; //#3a4149;
   display: flex;
   flex-direction: column;
-
+  
   .ui.container {
     background-color: white; //#1a1e27;
     margin: 0 12px !important;
     padding: 10px 14px;
     border: 1px solid #b1b1b1;
     border-radius: 6px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     &:nth-child(1) {
       box-shadow: #909090 -1px 4px 7px 1px;
@@ -61,25 +70,31 @@
       border: 1px solid #d2d2d2;
       padding: 9px 9px 12px;
 
-      button {
-        height: 38px;
-        margin-left: 5px;
-        border-radius: 4px;
-        padding: 0 24px;
-        margin-top: 24px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
 
-        &:focus {
-          outline:0;
-        }
+      button.base-button {
+        padding: 0 24px;
+        margin-left: 5px;
       }
+
+
+      
     
     } //(unwrapped input out of form for now)
 
-
+      .code-container {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
     
       .input, output {
 
         margin: 4px auto;
+        width: 100%;
 
         input[type='text'] {
           background-color: white;
@@ -151,6 +166,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: row;
+    min-height: 600px;
+    height: 100%;
   }
 
   .App-header {
@@ -161,9 +178,8 @@
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: #191919;
-    height: 100px;
-    margin-top: 12px;
-    margin-bottom: 6px;
+    padding-top: 18px;
+    padding-bottom: 24px;
 
     h2 {
       margin-top: 8px;

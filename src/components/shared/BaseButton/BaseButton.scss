@@ -1,0 +1,41 @@
+button.base-button {
+
+  background-color: #1c95dc; //#23a7f5;
+  border: 1px solid #4491d4;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 3px;
+
+  transition: all 0.25s ease;
+  
+  &:active {
+    background-color: #1884c3;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: #929292;
+    border-color: #d0d0d0;
+    cursor: default;
+  }
+
+  &.clicked {
+    animation: shadow 0.5s normal;
+  }
+
+
+  @keyframes shadow {
+    0% {
+      box-shadow: 0 0 0 0 rgba(65, 138, 214, 0.4);;
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(65, 138, 214, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(65, 138, 214, 0);
+    }
+  }
+
+}

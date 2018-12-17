@@ -96,8 +96,8 @@ export default class SharedForm extends React.Component {
   
 
   componentDidUpdate(prevProps) {
-    // const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
-    const hasNewItemSelected = (this.props.selectedItem && this.props.selectedItem.id) !== (prevProps.selectedItem && prevProps.selectedItem.id)
+    const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
+    //const hasNewItemSelected = (this.props.selectedItem && this.props.selectedItem.id) !== (prevProps.selectedItem && prevProps.selectedItem.id)
 
     if (hasNewItemSelected) 
       this.fillFormWithSelectedItem()
@@ -188,6 +188,8 @@ export default class SharedForm extends React.Component {
 
     if (selected) {
       this.setState({
+        predefinedSelected: selected, //Keeps the selected item displayed in the dropdown
+
         nameInput: selected.name,
         definitionInput: selected.definition,
         selectedActions: this.isReducersForm ? this.props.actions.filter(a => selected.actions.includes(a.name)) : []
@@ -272,30 +274,33 @@ export default class SharedForm extends React.Component {
             onChange={this.handlePredefinedSelection} />
         </div>
 
-         <div style={{ display: 'flex' }}>
-           <div className="input" style={{ flexGrow: 1 }}>
-             <label htmlFor="nameInput">{this.labels.nameLabel}</label>
-             <input
-               type="text"
-               name="nameInput"
-               ref={this.textInputRef}
-               value={nameInput}
-               onChange={this.handleNameInputChange}
-               onKeyPress={this.handleNameInputKeyPress}
-               placeholder={isInputEmpty ? this.labels.namePlaceholderEmpty : this.labels.namePlaceholderEdited} />
-          </div>
+        <div className="input">
 
-          <BaseButton
-            text={'Save'}
-            disabled={!this.hasChangesToSave()}
-            onClick={this.handleSave} />
+          <label htmlFor="nameInput">{this.labels.nameLabel}</label>
+          
+          <div style={{ display: 'flex' }}>
+            <input
+              type="text"
+              name="nameInput"
+              ref={this.textInputRef}
+              value={nameInput}
+              onChange={this.handleNameInputChange}
+              onKeyPress={this.handleNameInputKeyPress}
+              placeholder={isInputEmpty ? this.labels.namePlaceholderEmpty : this.labels.namePlaceholderEdited} />
+            
+
+            <BaseButton
+              text={'Save'}
+              disabled={!nameInput && !definitionInput}
+              onClick={this.handleSave} />
+          </div>
         </div>
 
         {/* {this.isReducersForm ? 
           this.renderActionsDropdown() : 
           null} */}
        
-       <div className="input">
+       <div className="input code-container">
           <label>Code</label>
 
           <BaseCodeEditor

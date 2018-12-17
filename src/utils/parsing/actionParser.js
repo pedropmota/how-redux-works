@@ -20,9 +20,26 @@ export function validateAction(actionDefinition) {
   return null;
 }
 
-
-
+/**
+ * TODO: Try redux-thunk. What would I need to make it work?
+ * 1: dispatch method is passing to the action creator. It allows actions to dispatch another actions.
+ * (most likely not worth it)
+ * @param {*} actionString 
+ */
 export function parseAction(actionString) {
+
+  const script = acorn.parse(actionString)
+
+  const functionDeclarations = script.body.filter(b => b.type === 'FunctionDeclaration')
+
+  if (!functionDeclarations.length)
+    throw new Error(`An action creator needs to consist of one main function declaration.`)
+
+  if (functionDeclarations.length > 1)
+    throw new Error(`The action creator needs to consist of only one main function declaration.`) 
+}
+
+export function parseAction_restrict(actionString) {
 
   const script = acorn.parse(actionString);
 

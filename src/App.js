@@ -11,8 +11,8 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          <h2>HOW_REDUX_WORKS</h2>
-          <h4>An interactive tutorial of Redux and the Flux pattern.</h4>
+          <h1>HOW_REDUX_WORKS</h1>
+          <h3>An interactive tutorial of Redux and the Flux pattern.</h3>
         </header>
 
         <div className="App-main-container">

@@ -4,6 +4,26 @@
 
 .tutorialModal {
 
+  .tutorial-button {
+    background-color: transparent;
+    border-width: 0;
+    cursor: pointer;
+
+    .question-icon {
+      color: #1f9fe0;
+      font-size: 28px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0px 0px 16px 1px rgba(65, 151, 202, 0.7);
+      }
+    }
+
+  }
+
+
+
   .nav-buttons {
     text-align: center;
     

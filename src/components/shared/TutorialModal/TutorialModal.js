@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Header, Modal, TransitionablePortal, List } from "semantic-ui-react";
-//import Transition from "react-transition-group/Transition";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { Transition } from 'react-spring';
 import './TutorialModal.scss'
+import BaseTooltip from "../BaseTooltip/BaseTooltip";
 
 const pageTransitions = {
   duration: {
@@ -107,7 +109,12 @@ export default class TutorialModal extends React.Component {
     return (
       <div className="tutorialModal main">
         <div class="button-container">
-          <button onClick={this.toggleOpen}>Tutorial</button>
+          <BaseTooltip
+            content="Tutorial">
+            <button onClick={this.toggleOpen} className="tutorial-button">
+              <FontAwesomeIcon icon={faQuestionCircle} className="question-icon" />
+            </button>
+          </BaseTooltip>
         </div>
         <TransitionablePortal 
           open={isOpen} 

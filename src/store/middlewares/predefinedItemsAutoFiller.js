@@ -20,7 +20,7 @@ function* runPredefinedItemsAutoFiller(action) {
   if (predefinedReducerUsed) {
     yield addActionsNeededByReducer(predefinedReducerUsed)
 
-    yield setActionsToReducer(reducerAdded, predefinedReducerUsed)
+    //yield setActionsToReducer(reducerAdded, predefinedReducerUsed)
   }
 }
 

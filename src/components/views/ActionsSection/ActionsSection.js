@@ -36,6 +36,7 @@ export default class ActionSection extends React.Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleItemSelection = this.handleItemSelection.bind(this)
     this.handleClearSelection = this.handleClearSelection.bind(this)
+    this.handlePredefinedSelected = this.handlePredefinedSelected.bind(this)
   }
 
   handleSave(action) {
@@ -50,6 +51,11 @@ export default class ActionSection extends React.Component {
 
   handleItemSelection(item) {
     this.props.setSelectedAction(item.id)
+  }
+
+  handlePredefinedSelected() {
+    if (this.props.selectedActionId)
+      this.props.setSelectedAction(null)
   }
 
   handleDelete(action) {
@@ -85,7 +91,8 @@ export default class ActionSection extends React.Component {
           formOf={'Actions'}
           selectedItem={this.props.actions.filter(a => a.id === this.props.selectedActionId)[0] || null}
           onSave={this.handleSave}
-          onClear={this.handleClearSelection} />
+          onClear={this.handleClearSelection}
+          onPredefinedSelected={this.handlePredefinedSelected} />
 
       </Container>
     )

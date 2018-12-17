@@ -6,8 +6,9 @@ import { predefinedActions } from "../../../constants/predefinedItems";
 import { Container } from "semantic-ui-react";
 import "./ReducersSection.scss"
 import SharedForm from "../../shared/SharedForm/SharedForm";
+import reducerTutorialPages from "./reducerTutorials";
+import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 
-//TODO: 
 export default class ReducersSection extends React.Component {
 
   static propTypes = {
@@ -45,7 +46,8 @@ export default class ReducersSection extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleItemSelection = this.handleItemSelection.bind(this);
-    this.handleCancelSelection = this.handleCancelSelection.bind(this);   
+    this.handleCancelSelection = this.handleCancelSelection.bind(this);
+    this.handlePredefinedSelected = this.handlePredefinedSelected.bind(this);
   }
   
   handleItemSelection(item) {
@@ -68,6 +70,11 @@ export default class ReducersSection extends React.Component {
       this.props.setSelectedReducer(null)
   }
 
+  handlePredefinedSelected() {
+    if (this.props.selectedReducerId)
+      this.props.setSelectedReducer(null)
+  }
+
   handleCancelSelection() {
     this.props.setSelectedReducer(null)
   }
@@ -76,7 +83,11 @@ export default class ReducersSection extends React.Component {
   
     return (
       <Container className="reducers-section">
-        <h2>Reducers</h2>
+        <h2>
+          Reducers
+          <TutorialModal
+            pages={reducerTutorialPages} />
+        </h2>
 
         <BaseItemsList
           items={this.props.reducers}
@@ -90,7 +101,8 @@ export default class ReducersSection extends React.Component {
             selectedItem={this.props.reducers.filter(r => r.id === this.props.selectedReducerId)[0] || null}
             actions={this.props.actions}
             onSave={this.handleSave}
-            onClear={this.handleCancelSelection} />
+            onClear={this.handleCancelSelection}
+            onPredefinedSelected={this.handlePredefinedSelected} />
 
       </Container>
     )

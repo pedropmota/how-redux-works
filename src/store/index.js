@@ -26,7 +26,7 @@ const store = storedState ?
   createStore(reducers, middlewares);
 
 //sagaMiddleware.run(newItemsAutoSelector)
-//sagaMiddleware.run(predefinedItemsAutoFiller)
+sagaMiddleware.run(predefinedItemsAutoFiller)
 sagaMiddleware.run(reducerRevalidator)
 sagaMiddleware.run(userStoreUpdater)
 

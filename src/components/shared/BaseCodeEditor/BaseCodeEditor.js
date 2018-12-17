@@ -11,7 +11,10 @@ const BaseCodeEditor = ({ name, value, onChange, isReadOnly, ...props }) =>
     onChange={onChange} //function param: onChange(newValue, event)
     fontSize={14}
     minLines={8}
-    maxLines={12}
+    //maxLines={200}
+    height={'100%'}
+    width={'100%'}
+    style={{ display: 'flex', flexGrow: 1, flexPosition: 'column', ...props.style }}
     showPrintMargin={true}
     showGutter={!isReadOnly}
     highlightActiveLine={true}

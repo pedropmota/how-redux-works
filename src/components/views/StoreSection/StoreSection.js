@@ -4,6 +4,9 @@ import beautify from "json-beautify";
 
 import BaseCodeEditor from "../../shared/BaseCodeEditor/BaseCodeEditor";
 import { Container } from "semantic-ui-react";
+import BaseButton from "../../shared/BaseButton/BaseButton";
+import storeTutorialPages from "./storeTutorials"
+import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 
 const styles = {
   formInput: { display: 'block', margin: 'auto' }
@@ -66,51 +69,58 @@ export default class StoreContainer extends React.Component {
 
     return (
       <Container>
-        <h2>Store</h2>
+        <h2>
+          Store
+          <TutorialModal
+            pages={storeTutorialPages} />
+        </h2>
 
-        <div className="input">
-          <label>Dispatch an action</label>
-        
-          <input
-            type="text"
-            value={this.state.dispatchInput}
-            name="dispatchInput"
-            onChange={this.handleInputChange}
-            placeholder="Dispatch an action"
-            />
-        </div>
+        <div className="form">
 
-        <button
-          style={styles.formInput}
-          onClick={this.handleDispatch}>
-          Dispatch
-        </button>
+          <div className="input">
 
-        {/* <button
-          style={styles.formInput}
-          onClick={this.handleClear}>
-          Clear Store
-        </button> */}
+            <label>Dispatch an action</label>
 
+            <div style={{ display: 'flex' }}>
+              
+              <input
+                type="text"
+                value={this.state.dispatchInput}
+                name="dispatchInput"
+                onChange={this.handleInputChange}
+                placeholder="Dispatch an action"
+                />
 
-        <div className="input">
-          <label>Your current store's state</label>
-
-          <BaseCodeEditor
-            value={stateJson}
-            isReadOnly={true}
-            style={{ marginBottom: '10px' }} />
-
-        </div>
-
-        <div className="input">
-          <label>Actions dispatched by you</label>
-
-          <BaseCodeEditor
-            value={actionsJson}
-            isReadOnly={true} />
+              <BaseButton 
+                text={'Dispatch'}
+                onClick={this.handleDispatch} />
+            </div>
           </div>
 
+          {/* <button
+            style={styles.formInput}
+            onClick={this.handleClear}>
+            Clear Store
+          </button> */}
+
+
+          <div className="input code-container">
+            <label>Your current store's state</label>
+
+            <BaseCodeEditor
+              value={stateJson}
+              isReadOnly={true} />
+
+          </div>
+
+          <div className="input code-container">
+            <label>Actions dispatched by you</label>
+
+            <BaseCodeEditor
+              value={actionsJson}
+              isReadOnly={true} />
+            </div>
+        </div>
       </Container>
     )
   }

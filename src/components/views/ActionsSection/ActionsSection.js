@@ -6,6 +6,7 @@ import SharedForm from "../../shared/SharedForm/SharedForm";
 import "./ActionsSection.scss";
 import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 import actionTutorialPages from "./actionTutorials";
+import { parseAction } from "../../../utils/parsing/actionParser"
 
 export default class ActionSection extends React.Component {
 
@@ -40,6 +41,11 @@ export default class ActionSection extends React.Component {
   }
 
   handleSave(action) {
+    try { 
+      const parsedAction = parseAction(action.definition)
+      action.name = parsedAction.name
+    } catch { }
+
     if (!action.id) 
       this.props.addAction(action)
     

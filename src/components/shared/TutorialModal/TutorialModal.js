@@ -108,7 +108,7 @@ export default class TutorialModal extends React.Component {
 
     return (
       <div className="tutorialModal main">
-        <div class="button-container">
+        <div className="button-container">
           <BaseTooltip
             content="Tutorial">
             <button onClick={this.toggleOpen} className="tutorial-button">
@@ -163,11 +163,12 @@ export default class TutorialModal extends React.Component {
                   
                   {this.props.pages.map((page, i) =>
                     <a
-                     className={`nav page ${i === currentChildIndex ? 'disabled' : ''}`}
-                     onClick={() => { this.setState({ currentChildIndex: i })}}
-                     >
-                     {i === currentChildIndex ? '●' : '○'}
-                     </a>
+                      key={i}
+                      className={`nav page ${i === currentChildIndex ? 'disabled' : ''}`}
+                      onClick={() => { this.setState({ currentChildIndex: i })}}
+                      >
+                      {i === currentChildIndex ? '●' : '○'}
+                      </a>
                   )}
 
                 {<a 

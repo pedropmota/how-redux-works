@@ -1,4 +1,4 @@
-import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from '../actions';
+import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS, VALIDATE_REDUCER, VALIDATE_ALL_REDUCERS } from '../actions';
 import { validateReducer } from "../utils/parsing/reducerParser";
 import { newUuid } from "../utils/uuid";
 
@@ -10,9 +10,7 @@ export function reducers(state = [], action) {
         {
           id: newUuid(),
           name: action.name,
-          definition: action.definition,
-          actions: action.actions.map(a => a.id),
-          errorMessage: validateReducer(action.definition, action.actions) || validateDuplicatedName(state, action)
+          definition: action.definition
         }
       ]
     
@@ -24,15 +22,32 @@ export function reducers(state = [], action) {
         return {
           ...item,
           name: action.name,
-          definition: action.definition,
-          actions: action.actions.map(a => a.id),
-          errorMessage: validateReducer(action.definition, action.actions) || validateDuplicatedName(state, action)
+          definition: action.definition
         }
       })
     }
 
     case DELETE_REDUCER: {
       return state.filter((item) => item.id !== action.id)
+    }
+
+    case VALIDATE_REDUCER: {
+      return state.map(item => {
+        if (item.id !== action.id)
+          return item
+
+        return {
+          ...item,
+          errorMessage: validateReducer(item.definition, action.actions) || validateDuplicatedName(state, item)
+        }
+      })
+    }
+
+    case VALIDATE_ALL_REDUCERS: {
+      return state.map(item => ({
+        ...item,
+        errorMessage: validateReducer(item.definition, action.actions) || validateDuplicatedName(state, item)
+      }))
     }
 
     case REVALIDATE_REDUCERS: {

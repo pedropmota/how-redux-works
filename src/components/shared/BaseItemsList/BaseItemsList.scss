@@ -69,6 +69,9 @@
       &:hover {
         box-shadow: 0px 0px 5px 1px #cecece;
       }
+      &:active {
+        border-color: rgb(70, 70, 70);
+      }
     }
 
     .delete-icon {

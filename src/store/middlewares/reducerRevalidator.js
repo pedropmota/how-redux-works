@@ -1,5 +1,5 @@
 import { select, put, takeEvery } from "redux-saga/effects";
-import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers } from "../../actions";
+import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers, validateAllReducers, validateReducer } from "../../actions";
 
 
 /**
@@ -11,17 +11,36 @@ import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, reva
 
 export const reducerRevalidator = function* () {
   yield [
-    takeEvery(EDIT_ACTION, runRevalidateReducers),
-    takeEvery(DELETE_ACTION, runRevalidateReducers)
+    takeEvery(ADD_ACTION, runValidateAllReducers),
+    takeEvery(EDIT_ACTION, runValidateAllReducers),
+    takeEvery(DELETE_ACTION, runValidateAllReducers),
+    takeEvery(ADD_REDUCER, runValidateNewReducer),
+    takeEvery(EDIT_REDUCER, runValidateCurrentReducer)
   ]
 }
 
-function* runRevalidateReducers(action) {
-  const affectedActionId = action.id;
+function* runValidateNewReducer(action) {
+  const newReducer = yield select(store => store.reducers[store.reducers.length - 1])
   const allActions = yield select(store => store.actions)
-
-  yield put(revalidateReducers(affectedActionId, allActions))
+  yield put(validateReducer(newReducer.id, allActions))
 }
+
+function* runValidateCurrentReducer(action) {
+  const allActions = yield select(store => store.actions)
+  yield put(validateReducer(action.id, allActions))
+}
+
+function* runValidateAllReducers(action) {
+  const allActions = yield select(store => store.actions)
+  yield put(validateAllReducers(allActions))
+}
+
+// function* runRevalidateReducers(action) {
+//   const affectedActionId = action.id;
+//   const allActions = yield select(store => store.actions)
+
+//   yield put(revalidateReducers(affectedActionId, allActions))
+// }
 
 
 

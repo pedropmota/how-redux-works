@@ -22,7 +22,7 @@ export function validateAction(actionDefinition) {
 
 /**
  * TODO: Try redux-thunk. What would I need to make it work?
- * 1: dispatch method is passing to the action creator. It allows actions to dispatch another actions.
+ * 1: A dispatch method is passing to the action creator. It allows actions to dispatch another actions.
  * (most likely not worth it)
  * @param {*} actionString 
  */
@@ -37,6 +37,12 @@ export function parseAction(actionString) {
 
   if (functionDeclarations.length > 1)
     throw new Error(`The action creator needs to consist of only one main function declaration.`) 
+
+  
+  return {
+    name: functionDeclarations[0].id.name,
+    params: functionDeclarations[0].params.map(p => p.name)
+  }
 }
 
 export function parseAction_restrict(actionString) {

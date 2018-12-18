@@ -8,7 +8,7 @@ export function store(state = null, action) {
   switch(action.type) {
     case UPDATE_STORE:
       
-      const reducers = evalateUserReducers(action.reducers, action.actions)
+      const reducers = evaluateUserReducers(action.reducers, action.actions)
       
       if (!reducers)
         return null;
@@ -61,16 +61,15 @@ export function store(state = null, action) {
 }
 
 
-function evalateUserReducers(reducers, actions) {
+function evaluateUserReducers(reducers, actions) {
   if (!reducers || !reducers.length || !actions)
     return null;
   
   const validReducers = reducers.filter(r => !r.errorMessage)
 
   const evaluatedReducers = validReducers.map(reducer => {
-    const actionsInReducer = actions.filter(a => reducer.actions.includes(a.id))
     try {
-      return evaluateReducer(reducer.definition, actionsInReducer)
+      return evaluateReducer(reducer.definition, actions)
     } catch { return null }
   }).filter(r => r)
 

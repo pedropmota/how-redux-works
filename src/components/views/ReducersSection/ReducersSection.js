@@ -8,6 +8,7 @@ import "./ReducersSection.scss"
 import SharedForm from "../../shared/SharedForm/SharedForm";
 import reducerTutorialPages from "./reducerTutorials";
 import TutorialModal from "../../shared/TutorialModal/TutorialModal";
+import { parseReducer } from "../../../utils/parsing/reducerParser";
 
 export default class ReducersSection extends React.Component {
 
@@ -55,6 +56,11 @@ export default class ReducersSection extends React.Component {
   }
 
   handleSave(reducer) {
+    try { 
+      const parsedReducer = parseReducer(reducer.definition)
+      reducer.name = parsedReducer.name
+    } catch { }
+
     if (!reducer.id)
       this.props.addReducer(reducer)
     else {

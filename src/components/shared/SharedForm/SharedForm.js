@@ -202,14 +202,13 @@ export default class SharedForm extends React.Component {
   }
 
   hasChangesToSave() {
-    const { nameInput, definitionInput, selectedActions } = this.state
+    const { nameInput, definitionInput } = this.state
     const { selectedItem } = this.props
 
     if (!selectedItem) {
-      return nameInput || definitionInput || selectedActions.length
+      return nameInput || definitionInput
     } else {
-      return nameInput !== selectedItem.name || definitionInput !== selectedItem.definition ||
-             (this.isReducersForm && selectedActions.every(a => selectedItem.actions.includes(a)))
+      return nameInput !== selectedItem.name || definitionInput !== selectedItem.definition
     }
   }
 
@@ -291,7 +290,7 @@ export default class SharedForm extends React.Component {
 
             <BaseButton
               text={'Save'}
-              disabled={!nameInput && !definitionInput}
+              disabled={!this.hasChangesToSave()}
               onClick={this.handleSave} />
           </div>
         </div>

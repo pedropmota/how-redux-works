@@ -1,21 +1,16 @@
 import { select, put, takeEvery } from "redux-saga/effects";
-import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers, validateAllReducers, validateReducer } from "../../actions";
+import { ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, revalidateReducers, validateAllReducers, validateReducer, DELETE_REDUCER } from "../../actions";
 
 
-/**
- * TODO:
- * If decided to move actions away from reducers, this middleware will need refactoring.
- * And it'll probably be best to have all reducers' validations coming from here.
- */
-
-
-export const reducerRevalidator = function* () {
+export const reducerValidator = function* () {
   yield [
     takeEvery(ADD_ACTION, runValidateAllReducers),
     takeEvery(EDIT_ACTION, runValidateAllReducers),
     takeEvery(DELETE_ACTION, runValidateAllReducers),
+    
     takeEvery(ADD_REDUCER, runValidateNewReducer),
-    takeEvery(EDIT_REDUCER, runValidateCurrentReducer)
+    takeEvery(EDIT_REDUCER, runValidateCurrentReducer),
+    takeEvery(DELETE_REDUCER, runValidateAllReducers)
   ]
 }
 

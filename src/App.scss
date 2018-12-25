@@ -68,7 +68,7 @@ body {
       border-radius: 2px;
       box-shadow: #efefef 0px 0px 1px 1px;
       border: 1px solid #d2d2d2;
-      padding: 9px 9px 12px;
+      padding: 3px 9px 12px;
 
       flex-grow: 1;
       display: flex;
@@ -79,6 +79,9 @@ body {
         margin-left: 5px;
       }
 
+      .form-title {
+        font-size: 12px;
+      }
 
       
     

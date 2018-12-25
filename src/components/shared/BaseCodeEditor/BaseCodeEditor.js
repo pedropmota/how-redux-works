@@ -12,7 +12,7 @@ const BaseCodeEditor = ({ name, value, onChange, isReadOnly, ...props }) =>
     fontSize={14}
     minLines={8}
     //maxLines={200}
-    height={'100%'}
+    //height={'100%'}
     width={'100%'}
     style={{ display: 'flex', flexGrow: 1, flexPosition: 'column', ...props.style }}
     showPrintMargin={true}

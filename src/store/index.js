@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from "redux-saga";
 import reducers from '../reducers';
 import { userStoreUpdater } from "./middlewares/userStoreUpdater";
-import { reducerRevalidator } from "./middlewares/reducerRevalidator";
+import { reducerValidator } from "./middlewares/reducerValidator";
 import { predefinedItemsAutoFiller } from './middlewares/predefinedItemsAutoFiller';
 import { newItemsAutoSelector } from './middlewares/newItemsAutoSelector';
 import { getStoredState, storeState } from "./storeStorage";
@@ -27,7 +27,7 @@ const store = storedState ?
 
 //sagaMiddleware.run(newItemsAutoSelector)
 sagaMiddleware.run(predefinedItemsAutoFiller)
-sagaMiddleware.run(reducerRevalidator)
+sagaMiddleware.run(reducerValidator)
 sagaMiddleware.run(userStoreUpdater)
 
 const unsubscribe = store.subscribe((info) => {

@@ -43,80 +43,84 @@ class BaseItemsList extends React.Component {
 
   render() {
     const { items, title, selectedId, onItemSelection, onItemDeletion, ...props } = this.props
-    
+
     return (
       <div
         className={`items-list ${!items.length ? 'empty' : ''}`}
         ref={this.panelRef}
         {...props}>
         
-        <span className="title">{title}</span>
+        { items.length ?
+          <span className="title">{title}</span>
+          : null}
 
-        {!items.length ?
+        {/* {!items.length ?
           <div>
             (Your items will be listed here.)
-          </div> : null}
+          </div> : null} */}
 
-        <Transition 
-          items={items}
-          keys={(item) => item.id}
-          from={{ opacity: 0, transform: 'translate3d(0, 30px, 0)' }}
-          enter={{ opacity: 1, transform: 'translate3d(0, 0px, 0)' }}
-          leave={{ opacity: 0 }}>
+        <div className="items-list-container">
+          <Transition 
+            items={items}
+            keys={(item) => item.id}
+            from={{ opacity: 0, transform: 'translate3d(0, 30px, 0)' }}
+            enter={{ opacity: 1, transform: 'translate3d(0, 0px, 0)' }}
+            leave={{ opacity: 0 }}
+            initial={null}>
 
-          {item => transitionProps => {
+            {item => transitionProps => {
 
-            const isSelected = item.id === selectedId
-            return (
-              <div
-                //key={item.id}
-                style={transitionProps}
-                className={`items-list-item ${isSelected ? 'selected' : ''}`}>
-                
-                <span
-                  className={`items-list-name`}
-                  onClick={e => onItemSelection(item)}>
-                  {item.name || '(unnamed)'}
+              const isSelected = item.id === selectedId
+              return (
+                <div
+                  //key={item.id}
+                  style={transitionProps}
+                  className={`items-list-item ${isSelected ? 'selected' : ''}`}>
+                  
+                  <span
+                    className={`items-list-name`}
+                    onClick={e => onItemSelection(item)}>
+                    {item.name || '(unnamed)'}
 
-                  <BaseTooltip
-                    style={{ opacity: isSelected ? 1 : 0 }}
-                    content={'Editing'}>
-                    <FontAwesomeIcon icon={faPencilAlt} className="pencil-icon" />
-                  </BaseTooltip>
-                </span>
-                
-                {item.errorMessage ?
-                  <BaseTooltip
-                    content={`Error: ` + item.errorMessage}>
-                      <span
-                        className='items-list-error'
-                        //title={item.errorMessage}
-                        >
-                          <FontAwesomeIcon icon={faExclamationCircle} className="error-icon" />
-                      </span>
+                    <BaseTooltip
+                      style={{ opacity: isSelected ? 1 : 0 }}
+                      content={'Editing'}>
+                      <FontAwesomeIcon icon={faPencilAlt} className="pencil-icon" />
                     </BaseTooltip>
-                  : null
-                }
+                  </span>
+                  
+                  {item.errorMessage ?
+                    <BaseTooltip
+                      content={`Error: ` + item.errorMessage}>
+                        <span
+                          className='items-list-error'
+                          //title={item.errorMessage}
+                          >
+                            <FontAwesomeIcon icon={faExclamationCircle} className="error-icon" />
+                        </span>
+                      </BaseTooltip>
+                    : null
+                  }
 
-                {/* <BaseTooltip
-                  content={'Delete'}> */}
-                  <button
-                    title="Delete"
-                    className="items-list-delete"
-                    onClick={e => onItemDeletion(item)}>
-                      <FontAwesomeIcon icon={faTrashAlt} className="delete-icon" />
-                  </button>
-                {/* </BaseTooltip> */}
-              </div>
-            )}
+                  {/* <BaseTooltip
+                    content={'Delete'}> */}
+                    <button
+                      title="Delete"
+                      className="items-list-delete"
+                      onClick={e => onItemDeletion(item)}>
+                        <FontAwesomeIcon icon={faTrashAlt} className="delete-icon" />
+                    </button>
+                  {/* </BaseTooltip> */}
+                </div>
+              )}
 
-          }
+            }
 
 
-            {/* <div style={{...props, position: 'absolute' }}>{item.page}</div> */}
-          
-        </Transition>
-
+              {/* <div style={{...props, position: 'absolute' }}>{item.page}</div> */}
+            
+          </Transition>
+        </div>
         
       </div>
     )

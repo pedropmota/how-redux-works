@@ -22,12 +22,6 @@ export default class ReducersSection extends React.Component {
 
     selectedReducerId: PropTypes.string,
 
-    actions: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      definition: PropTypes.definition
-    })).isRequired,
-
     addReducer: PropTypes.func.isRequired,
 
     editReducer: PropTypes.func.isRequired,
@@ -105,7 +99,6 @@ export default class ReducersSection extends React.Component {
           <SharedForm
             formOf={'Reducers'}
             selectedItem={this.props.reducers.filter(r => r.id === this.props.selectedReducerId)[0] || null}
-            actions={this.props.actions}
             onSave={this.handleSave}
             onClear={this.handleCancelSelection}
             onPredefinedSelected={this.handlePredefinedSelected} />

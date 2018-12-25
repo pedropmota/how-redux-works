@@ -1,12 +1,14 @@
 import React from 'react'
-import { Popup } from 'semantic-ui-react'
+import { Tooltip } from 'react-tippy'
 import { Transition } from 'react-spring';
+import 'react-tippy/dist/tippy.css'
 
 const BaseTooltip = ({ children, content, ...props }) =>
-  <Popup
-    basic //Doesn't display the "arrow"
-    trigger={children}
-    content={content}
-    {...props } />
+  <Tooltip
+    title={content}
+    theme="light"
+    {...props }>
+    {children}
+  </Tooltip>
 
 export default BaseTooltip

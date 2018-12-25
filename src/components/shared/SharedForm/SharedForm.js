@@ -41,21 +41,11 @@ export default class SharedForm extends React.Component {
   static propTypes = {
     formOf: PropTypes.oneOf(['Actions', 'Reducers']).isRequired,
 
-    actions: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string
-    })),
-
-    selectedItem: PropTypes.oneOfType([PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      definition: PropTypes.string,
-      actions: PropTypes.arrayOf(PropTypes.string)
-    }), PropTypes.shape({
+    selectedItem: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
       definition: PropTypes.string
-    })]),
+    }),
 
     onSave: PropTypes.func.isRequired,
 
@@ -67,38 +57,42 @@ export default class SharedForm extends React.Component {
   state = {
     nameInput: '',
     definitionInput: '',
-
-    predefinedSelected: null,
-    
-    selectedActions: []
+    predefinedSelected: null
   }
 
   constructor(props) {
     super(props);
-
-    this.isReducersForm = props.formOf === 'Reducers'
-    this.predefinedItems = this.isReducersForm ? predefinedReducers : predefinedActions
-    this.parser = this.isReducersForm ? reducerParser : actionParser
-    this.labels = this.isReducersForm ? labels.reducers : labels.actions
 
     this.textInputRef = React.createRef()
 
     this.handleSave = this.handleSave.bind(this)
     this.handleNameInputChange = this.handleNameInputChange.bind(this)
     this.handleDefinitionInputChange = this.handleDefinitionInputChange.bind(this)
-    this.handleActionsChange = this.handleActionsChange.bind(this)
-    //this.handleClear = this.handleClear.bind(this)
     this.handleNameInputKeyPress = this.handleNameInputKeyPress.bind(this)
     this.handlePredefinedSelection = this.handlePredefinedSelection.bind(this)
     this.hasChangesToSave = this.hasChangesToSave.bind(this)
   }
 
+  get isReducersForm() {
+    return this.props.formOf === 'Reducers'
+  }
+  get predefinedItems() {
+    return this.isReducersForm ? predefinedReducers : predefinedActions
+  }
+  get parser() {
+    return this.isReducersForm ? reducerParser : actionParser
+  }
+  get labels() {
+    return this.isReducersForm ? labels.reducers : labels.actions
+  }
+  get title() {
+    return this.isReducersForm ? 'Add a reducer' : 'Add an action'
+  }
   
 
   componentDidUpdate(prevProps) {
     const hasNewItemSelected = this.props.selectedItem && this.props.selectedItem.id !== (prevProps.selectedItem && prevProps.selectedItem.id)
-    //const hasNewItemSelected = (this.props.selectedItem && this.props.selectedItem.id) !== (prevProps.selectedItem && prevProps.selectedItem.id)
-
+    
     if (hasNewItemSelected) 
       this.fillFormWithSelectedItem()
   }
@@ -109,28 +103,16 @@ export default class SharedForm extends React.Component {
     this.setState({
       nameInput: selectedItem.name || '',
       definitionInput: selectedItem.definition || '',
-      selectedActions: this.isReducersForm && selectedItem.actions ? this.props.actions.filter(a => selectedItem.actions.some(s => s === a.id)) : [],
       predefinedSelected: null
     })
   }
-  tryUpdatingDefinition(newName, newActions) {
+  tryUpdatingDefinition(newName) {
     const currentDefinition = this.state.definitionInput;
 
-    if (currentDefinition && currentDefinition !== this.parser.getAutoDefinition(this.state.nameInput, this.state.selectedActions))
+    if (currentDefinition && currentDefinition !== this.parser.getAutoDefinition(this.state.nameInput))
       return currentDefinition;
     
-    return this.parser.getAutoDefinition(newName, newActions)
-  }
-
-  handleActionsChange(selectedItems) {
-    const ids = selectedItems.map(i => i.value)
-    const actions = this.props.actions.filter(a => ids.includes(a.id));
-    const definition = this.tryUpdatingDefinition(this.state.nameInput, actions);
-
-    this.setState({
-      selectedActions: actions,
-      definitionInput: definition
-    })
+    return this.parser.getAutoDefinition(newName)
   }
 
   handleNameInputChange(e) {
@@ -158,11 +140,10 @@ export default class SharedForm extends React.Component {
     
   }
 
-  handleSave({ name, definition, actions, id } = { }) {
+  handleSave({ name, definition, id } = { }) {
     const item = {
       name: name || this.state.nameInput,
       definition: definition || this.state.definitionInput,
-      actions: actions || this.state.selectedActions,
       id: id !== undefined ? id : this.props.selectedItem ? this.props.selectedItem.id : null,
     }
     
@@ -172,7 +153,7 @@ export default class SharedForm extends React.Component {
   }
 
   clearInput() {
-    if (!this.state.nameInput && !this.state.definitionInput && !this.state.selectedActions.length)
+    if (!this.state.nameInput && !this.state.definitionInput)
       return
 
     this.setState({
@@ -192,7 +173,6 @@ export default class SharedForm extends React.Component {
 
         nameInput: selected.name,
         definitionInput: selected.definition,
-        selectedActions: this.isReducersForm ? this.props.actions.filter(a => selected.actions.includes(a.name)) : []
       })
 
       this.props.onPredefinedSelected && this.props.onPredefinedSelected(selected)
@@ -210,29 +190,6 @@ export default class SharedForm extends React.Component {
     } else {
       return nameInput !== selectedItem.name || definitionInput !== selectedItem.definition
     }
-  }
-
-  renderActionsDropdown() {
-    if (!this.isReducersForm)
-      return null
-
-    const predefinedReducerSelected = this.state.predefinedSelected
-    
-    const selectedActionsToDisplay = !predefinedReducerSelected ? 
-      this.state.selectedActions : 
-      this.props.actions.filter(a => predefinedReducerSelected.actions.includes(a.name))
-
-    return (
-      <div className="input">
-        <label>Actions</label>
-        <BaseDropdownMulti
-          options={this.props.actions.map(a => ({ label: a.name, value: a.id }))}
-          value={selectedActionsToDisplay.map(a => ({ label: a.name, value: a.id }))}
-          disabled={!!predefinedReducerSelected}
-          onChange={this.handleActionsChange}
-          placeholder={this.labels.actionsLabel} />
-      </div>
-    )
   }
 
   render() {
@@ -255,6 +212,8 @@ export default class SharedForm extends React.Component {
     
     return (
       <div className="form">
+        <div className="form-title">{this.title}</div>
+
         {/* <span>{this.props.selectedItem ? this.labels.formTitleEdit : this.labels.formTitleAdd }</span> */}
 
         {/* <FormInputController

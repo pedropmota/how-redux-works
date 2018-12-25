@@ -75,22 +75,18 @@ export function parseReducer(reducerString, actionsInReducer) {
 }
 
 
-export function getAutoDefinition(name, actions) {
+export function getAutoDefinition(name) {
   if (!name)
     return '';
 
   return `
 function ${Case.camel(name)}(state = [], action) {
-switch (action.type) {
-  ${actions.map(action =>
-  `case ${Case.constant(action.name)}:
-    //(modify it here to return a "reduced" (modified) version of the state, to fulfil the action:
-    return [...state]
-  
-  `).join('')}
-  default:
-    return state;
-}
+  switch (action.type) {
+    //(Check your actions here, and return the new state based on each action.)
+
+    default:
+      return state;
+  }
 }`.trim()
 
 }

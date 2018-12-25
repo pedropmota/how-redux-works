@@ -117,7 +117,7 @@ export default class SharedForm extends React.Component {
 
   handleNameInputChange(e) {
     const value = e.target.value;
-    const definition = this.tryUpdatingDefinition(value, this.state.selectedActions)
+    const definition = this.tryUpdatingDefinition(value)
 
     this.setState({
       nameInput: value,
@@ -132,7 +132,7 @@ export default class SharedForm extends React.Component {
   }
 
   handleNameInputKeyPress(e) {
-    if (!this.state.nameInput && !this.state.definitionInput && !this.state.selectedActions.length)
+    if (!this.state.nameInput && !this.state.definitionInput)
       return
 
     if (e.key === 'Enter' && e.target.value)
@@ -159,7 +159,6 @@ export default class SharedForm extends React.Component {
     this.setState({
       nameInput: '',
       definitionInput: '',
-      selectedActions: [],
       predefinedSelected: null
     })
   }
@@ -194,8 +193,7 @@ export default class SharedForm extends React.Component {
 
   render() {
 
-    const { nameInput, definitionInput, predefinedSelected, selectedActions } = this.state
-    const { selectedItem } = this.props
+    const { nameInput, definitionInput, predefinedSelected } = this.state
 
     const isInputEmpty = !nameInput && !definitionInput
 

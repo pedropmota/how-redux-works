@@ -8,6 +8,12 @@ import BaseButton from "../../shared/BaseButton/BaseButton";
 import storeTutorialPages from "./storeTutorials"
 import TutorialModal from "../../shared/TutorialModal/TutorialModal";
 
+import ReactJson from 'react-json-view';
+import JsonView from "../../shared/JsonView/JsonView";
+import BaseCodeView from "../../shared/BaseCodeView/BaseCodeView";
+import CodeMirror from 'react-codemirror'
+import './StoreSection.scss'
+
 const styles = {
   formInput: { display: 'block', margin: 'auto' }
 }
@@ -33,6 +39,7 @@ export default class StoreContainer extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleDispatch = this.handleDispatch.bind(this)
     this.handleClear = this.handleClear.bind(this)
+
   }
 
   handleInputChange(e) {
@@ -64,11 +71,11 @@ export default class StoreContainer extends React.Component {
   render() {
     const { currentState, dispatchedActions } = this.props;
 
-    const stateJson = currentState ? beautify(currentState, null, 2, 70) : null
+    const stateJson = currentState ? beautify(currentState, null, 2, 50) : null
     const actionsJson = dispatchedActions ? dispatchedActions.map(action => beautify(action)).join('\n') : null
-
+    
     return (
-      <Container>
+      <Container className="store-section">
         <h2>
           Store
           <TutorialModal
@@ -103,23 +110,33 @@ export default class StoreContainer extends React.Component {
             Clear Store
           </button> */}
 
+          {
+            stateJson ?
+            <>
+              <div className="output" style={{ overflow: 'auto'}}>
+                <label>Your current store's state</label>
 
-          <div className="input code-container">
-            <label>Your current store's state</label>
+                <BaseCodeView code={stateJson} language="json" />
+              </div>
 
-            <BaseCodeEditor
-              value={stateJson}
-              isReadOnly={true} />
+              <div className="output" style={{ overflow: 'auto'}}>
+                <label>Actions dispatched by you</label>
 
-          </div>
+                {actionsJson ?
+                  <BaseCodeView code={actionsJson} language="json" />
+                  :
+                  <p className="message">No actions dispatched yet.</p>
+                }
+              </div>
+            </>
+            :
+            <p className="message">
+              Your state will be displayed here when you add valid reducers.
+            </p>
+          }
 
-          <div className="input code-container">
-            <label>Actions dispatched by you</label>
 
-            <BaseCodeEditor
-              value={actionsJson}
-              isReadOnly={true} />
-            </div>
+          
         </div>
       </Container>
     )

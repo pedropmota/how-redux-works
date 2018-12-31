@@ -8,8 +8,13 @@ export default class BaseButton extends React.Component {
 
   static propTypes = {
     text: PropTypes.string.isRequired,
+    secondary: PropTypes.bool,
     onClick: PropTypes.func,
     disabled: PropTypes.bool
+  }
+
+  static defaultProps = {
+    secondary: false
   }
 
   state = {
@@ -33,11 +38,13 @@ export default class BaseButton extends React.Component {
 
   render() {
 
-    const { text, onClick, disabled, ...props } = this.props
-
+    const { text, onClick, disabled, secondary, ...props } = this.props
+    
     return (
       <button
-        className={`base-button ${this.state.clicked ? 'clicked' : ''}`}
+        className={`base-button 
+                  ${secondary ? 'secondary' : ''} 
+                  ${this.state.clicked ? 'clicked' : ''}`}
         onClick={this.handleClick}
         disabled={disabled ? 'disabled' : ''}
         {...props}>

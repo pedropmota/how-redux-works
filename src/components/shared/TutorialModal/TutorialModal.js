@@ -28,7 +28,8 @@ const pageTransitions = {
 export default class TutorialModal extends React.Component {
 
   static propTypes = {
-    pages: PropTypes.array.isRequired
+    pages: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired
   }
 
   state = { 
@@ -128,37 +129,35 @@ export default class TutorialModal extends React.Component {
             onClose={this.toggleOpen}
             closeOnDimmerClick={true}
             closeIcon>
-            <Modal.Header>Tutorial</Modal.Header>
+            <Modal.Header>{this.props.title}</Modal.Header>
             <Modal.Content>
-            <div>
-              <div className="pages-container">
-                
-                <Transition 
-                  items={this.props.pages.map((page, i) => ({ page, i })).filter(item => item.i === currentChildIndex)} 
+              <div>
+                <div className="pages-container">
                   
-                  keys={(item) => item.i}
-                  from={{ opacity: 0 }}
-                  enter={{ opacity: 1 }}
-                  leave={{ opacity: 0 }}>
+                  <Transition 
+                    items={this.props.pages.map((page, i) => ({ page, i })).filter(item => item.i === currentChildIndex)} 
+                    
+                    keys={(item) => item.i}
+                    from={{ opacity: 0 }}
+                    enter={{ opacity: 1 }}
+                    leave={{ opacity: 0 }}>
 
-                  {item => props =>
-                    <div style={{...props, position: 'absolute' }}>{item.page}</div>
-                  }
-                </Transition>
+                    {item => props =>
+                      <div style={{...props, position: 'absolute' }}>{item.page}</div>
+                    }
+                  </Transition>
 
-                {/* Dummy: occupies the space since the elements being displayed are absolute positioned: */}
-                <div style={{ opacity: 0, visibility: 'hidden' }}>
-                  {this.props.pages[currentChildIndex]}                
+                  {/* Dummy: occupies the space since the elements being displayed are absolute positioned: */}
+                  <div style={{ opacity: 0, visibility: 'hidden' }}>
+                    {this.props.pages[currentChildIndex]}                
+                  </div>
+
                 </div>
-
-
-             
-              </div>
               </div>   
               <div className="nav-buttons">
                 {<a 
                   className={`nav button ${!this.hasPrevious() ? 'disabled' : ''}`}
-                  onClick={() => {  }}>
+                  onClick={() => { this.setState({ currentChildIndex: currentChildIndex - 1 }) }}>
                   Previous </a>}
                   
                   {this.props.pages.map((page, i) =>

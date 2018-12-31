@@ -82,6 +82,7 @@ export default class ActionSection extends React.Component {
         <h2>
           Action Creators
           <TutorialModal
+            title="Action Creators Tutorial"
             pages={actionTutorialPages}
             />
         </h2>

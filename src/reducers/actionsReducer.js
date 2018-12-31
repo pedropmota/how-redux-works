@@ -30,11 +30,13 @@ export function actions(state = [], action) {
     }
 
     case DELETE_ACTION: {
+      const actionToDelete = state.filter(a => a.id === action.id)[0] || { }
       const newState = state.filter(item => item.id !== action.id)
       return newState.map(item => ({
           ...item, 
-          //Removes the duplicated name error from the other actions.
-          errorMessage: item.errorMessage || validateDuplicatedName(newState, item) 
+          //Revalidates the remaining actions with same name, useful for removing the duplicated name error.
+          errorMessage: actionToDelete.name !== item.name ? item.errorMessage : 
+            validateAction(item.definition) || validateDuplicatedName(newState, item) 
       }))
     }
 

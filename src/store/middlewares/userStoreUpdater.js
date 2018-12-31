@@ -1,4 +1,4 @@
-import { updateStore, ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS } from "../../actions";
+import { updateStore, ADD_ACTION, EDIT_ACTION, DELETE_ACTION, ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER } from "../../actions";
 import { takeEvery, put, select } from "redux-saga/effects";
 
 export const userStoreUpdater = function* () {
@@ -13,7 +13,6 @@ export const userStoreUpdater = function* () {
     takeEvery(ADD_REDUCER, runStoreUpdate),
     takeEvery(EDIT_REDUCER, runStoreUpdate),
     takeEvery(DELETE_REDUCER, runStoreUpdate),
-    //takeEvery(REVALIDATE_REDUCERS, runStoreUpdate),
   ]
 }
 

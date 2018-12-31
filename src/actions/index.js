@@ -9,7 +9,6 @@ export const DELETE_ACTION = 'DELETE_ACTION'
 export const ADD_REDUCER = 'ADD_REDUCER'
 export const EDIT_REDUCER = 'EDIT_REDUCER'
 export const DELETE_REDUCER = 'DELETE_REDUCER'
-export const REVALIDATE_REDUCERS = 'REVALIDATE_REDUCERS'
 export const VALIDATE_REDUCER = 'VALIDATE_REDUCER'
 export const VALIDATE_ALL_REDUCERS = 'VALIDATE_ALL_REDUCERS'
 
@@ -56,11 +55,6 @@ export function validateReducer(id, actions) {
 export function validateAllReducers(actions) {
   return { type: VALIDATE_ALL_REDUCERS, actions }
 }
-
-export function revalidateReducers(affectedActionId, allActions) {
-  return { type: REVALIDATE_REDUCERS, affectedActionId, allActions }
-}
-
 
 export function setSelectedAction(id) {
   return { type: SET_SELECTED_ACTION, id }

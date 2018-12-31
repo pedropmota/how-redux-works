@@ -1,4 +1,4 @@
-import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, REVALIDATE_REDUCERS, VALIDATE_REDUCER, VALIDATE_ALL_REDUCERS } from '../actions';
+import { ADD_REDUCER, EDIT_REDUCER, DELETE_REDUCER, VALIDATE_REDUCER, VALIDATE_ALL_REDUCERS } from '../actions';
 import { validateReducer } from "../utils/parsing/reducerParser";
 import { newUuid } from "../utils/uuid";
 
@@ -48,19 +48,6 @@ export function reducers(state = [], action) {
         ...item,
         errorMessage: validateReducer(item.definition, action.actions) || validateDuplicatedName(state, item)
       }))
-    }
-
-    case REVALIDATE_REDUCERS: {
-      return state.map(item => { 
-        if (!item.actions.includes(action.affectedActionId))
-          return item
-
-        const reducerActions = action.allActions.filter(a => item.actions.includes(a.id))
-        return {
-          ...item,
-          errorMessage: validateReducer(item.definition, reducerActions)
-        }
-      })
     }
 
     default:

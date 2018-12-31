@@ -86,7 +86,7 @@ export default class SharedForm extends React.Component {
     return this.isReducersForm ? labels.reducers : labels.actions
   }
   get title() {
-    return this.isReducersForm ? 'Add a reducer' : 'Add an action'
+    return !this.props.selectedItem ? this.labels.formTitleAdd : this.labels.formTitleEdit
   }
   
 
@@ -194,6 +194,7 @@ export default class SharedForm extends React.Component {
   render() {
 
     const { nameInput, definitionInput, predefinedSelected } = this.state
+    const { selectedItem } = this.props
 
     const isInputEmpty = !nameInput && !definitionInput
 
@@ -246,8 +247,9 @@ export default class SharedForm extends React.Component {
             
 
             <BaseButton
-              text={'Save'}
-              disabled={!this.hasChangesToSave()}
+              text={selectedItem && !this.hasChangesToSave() ? 'Cancel' : 'Save'}
+              secondary={selectedItem && !this.hasChangesToSave()}
+              disabled={!selectedItem && !this.hasChangesToSave()}
               onClick={this.handleSave} />
           </div>
         </div>

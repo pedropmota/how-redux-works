@@ -16,8 +16,13 @@ export default class ReducersSection extends React.Component {
     reducers: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
-      definition: PropTypes.definition,
-      actions: PropTypes.arrayOf(PropTypes.string)
+      definition: PropTypes.definition
+    })).isRequired,
+
+    actions: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      definition: PropTypes.definition
     })).isRequired,
 
     selectedReducerId: PropTypes.string,
@@ -51,7 +56,7 @@ export default class ReducersSection extends React.Component {
 
   handleSave(reducer) {
     try { 
-      const parsedReducer = parseReducer(reducer.definition)
+      const parsedReducer = parseReducer(reducer.definition, this.props.actions)
       reducer.name = parsedReducer.name
     } catch { }
 

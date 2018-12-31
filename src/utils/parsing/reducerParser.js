@@ -2,15 +2,16 @@ import * as acorn from "acorn";
 import Case from "case";
 
 /**
- * Evaluates the reducer function definition, by also considering its action definitions.
+ * Evaluates the reducer function definition, by also considering the valid action creator definitions.
  * Returns a regular Js function with the reducer (+actions) code.
  * (Throws an error if reducer code can't be evaluated.)
  * @param {string} reducer 
- * @param {Action[]} actionsInReducer 
+ * @param {Action[]} actions 
  */
-export function evaluateReducer(reducerDefinition, actionsInReducer) {
+export function evaluateReducer(reducerDefinition, actions) {
+  const validActions = getValidActions(actions);
 
-  reducerDefinition = tryAttachingActionDefinitions(reducerDefinition, actionsInReducer)
+  reducerDefinition = tryAttachingActionDefinitions(reducerDefinition, validActions)
 
   //Inserts the action definition inside the reducer's body, to evaluate the action types
   const reducerFunction = (new Function(
@@ -25,18 +26,15 @@ export function evaluateReducer(reducerDefinition, actionsInReducer) {
 
 
 
-export function validateReducer(reducerDefinition, actionsInReducer) {
+export function validateReducer(reducerDefinition, actions) {
   if (!reducerDefinition)
     return `Reducer definition can't be empty.`
 
-  if (actionsInReducer.filter(a => a.errorMessage).length)
-    return `There is an error in one of the reducer's actions.`
-
   try {
-    
-    parseReducer(reducerDefinition, actionsInReducer)
+    debugger;
+    parseReducer(reducerDefinition, actions)
 
-    evaluateReducer(reducerDefinition, actionsInReducer)
+    evaluateReducer(reducerDefinition, actions)
 
   } catch (error) {
     console.log('Error parsing reducer', error)
@@ -48,9 +46,12 @@ export function validateReducer(reducerDefinition, actionsInReducer) {
 
 
 
-export function parseReducer(reducerString, actionsInReducer) {
+export function parseReducer(reducerString, actions) {
 
-  reducerString = tryAttachingActionDefinitions(reducerString, actionsInReducer);
+  const validActions = getValidActions(actions);
+
+  
+  reducerString = tryAttachingActionDefinitions(reducerString, validActions);
 
   const script = acorn.parse(reducerString.trim(), { ecmaVersion: 9 });
 
@@ -65,7 +66,7 @@ export function parseReducer(reducerString, actionsInReducer) {
   if (reducer.params.length !== 2)
     throw new Error(`Your reducer function needs to receive two arguments: store and action`)
   
-  //TODO: Validate actions
+  //TODO: Validate actions?
 
   return {
     name: reducer.id.name,
@@ -91,20 +92,21 @@ function ${Case.camel(name)}(state = [], action) {
 
 }
 
-
+/**
+ * TODO: Unit tests!
+ */
 function tryAttachingActionDefinitions(reducerString, actions) {
   try {
     const actionDefinitions = actions ? actions.map(a => a.definition).join('') : null
 
-    const script = acorn.parse(reducerString.trim(), { ecmaVersion: 9 });
+    if (!actionDefinitions) 
+      return reducerString
 
-    const isValidReducer = script.body.length === 1 && script.body[0].type === 'FunctionDeclaration';
-
-    if (!actionDefinitions || !isValidReducer) 
-      return reducerString;
-
-    const bodyStartIndex = reducerString.indexOf('{') + 1;
+    const bodyStartIndex = getIndexOfFunctionBodyStart(reducerString)
     
+    if (bodyStartIndex === -1)
+      return reducerString
+
     //Inserts the action definition inside the reducer's body, to evaluate the action types
     reducerString = `${reducerString.slice(0, bodyStartIndex)}
                       ${actionDefinitions}
@@ -112,5 +114,56 @@ function tryAttachingActionDefinitions(reducerString, actions) {
 
   } finally {
     return reducerString;
-  }
+  }  
 }
+
+
+function getValidActions(actions) {
+  return actions.filter(a => !a.errorMessage)
+}
+
+
+/**
+ * Finds the index of the body start of the function.
+ * Searches by ")" followed by "{", which represents the end of param declaration and start of the function body.
+ * Returns -1 if it's not a function declaration.
+ * TODO: Unit tests!
+ * @param {string} functionString 
+ */
+function getIndexOfFunctionBodyStart(functionString) {
+  //Parses function and checks if it's a regular function declaration:
+  try {
+    const script = acorn.parse(functionString.trim(), { ecmaVersion: 9 });
+
+    const isFunctionDeclaraction = script.body.length === 1 && script.body[0].type === 'FunctionDeclaration';
+
+    if (!isFunctionDeclaraction)
+      throw new Error()
+
+  } catch {
+    return -1;
+  }
+
+
+  //Iterates through the string, looking for a ')' followed by '{' (spaces between then is acceptable)
+
+  let currentString = functionString;
+  let indexOfCloseParantesys = 0;
+  let bodyStartIsNext = false;
+
+  while (!bodyStartIsNext && indexOfCloseParantesys !== -1) {
+    let indexOfCloseParantesys = currentString.indexOf(')')
+
+    let bodyStartIsNext = currentString.slice(indexOfCloseParantesys + 1).trim().startsWith('{');
+
+    if (bodyStartIsNext) {
+      return functionString.indexOf('{', indexOfCloseParantesys) + 1
+    }
+
+    currentString = currentString.slice(indexOfCloseParantesys)
+
+  }
+
+  return -1;
+}
+

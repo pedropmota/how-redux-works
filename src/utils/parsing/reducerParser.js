@@ -31,7 +31,6 @@ export function validateReducer(reducerDefinition, actions) {
     return `Reducer definition can't be empty.`
 
   try {
-    debugger;
     parseReducer(reducerDefinition, actions)
 
     evaluateReducer(reducerDefinition, actions)
@@ -43,7 +42,6 @@ export function validateReducer(reducerDefinition, actions) {
 
   return null;
 }
-
 
 
 export function parseReducer(reducerString, actions) {

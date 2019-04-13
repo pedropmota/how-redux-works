@@ -1,11 +1,43 @@
 .store-section {
 
   .output {
-    
+    max-height: 40%;
+    display: flex;
+    flex-direction: column;
   }
 
-  .message {
+  .message-container {
+    position: relative;
+    margin-top: 3px;
+    margin-bottom: 16px;
 
+    .no-space-container {
+      position: absolute;
+      background: transparent; 
+      width: 100%;
+    }
+  }
+
+}
+
+.message-handler-message {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 15px;
+  text-align: center;
+
+  &.success {
+    background-color: #06a906;
+    border-color: #038003;
+    color: white;
+  }
+
+  &.error {
+    background-color: #f16e6e;
+    border-color: #ec0505;
+    color: white;
   }
 
 }

@@ -109,16 +109,16 @@ body {
           width: 100%;
           
           
-          transition: all 0.5s ease;
+          transition: box-shadow 0.5s ease;
 
           &:focus {
             box-shadow: rgba(206, 229, 253, 0.8) 0px 0px 3px 1px;
             border: 1px solid #c1c0c0;
-            outline: none;
+            //outline: none;
           }
 
           &::selection {
-            background-color: transparent;
+            background: #98cefd;
           }
         }
 

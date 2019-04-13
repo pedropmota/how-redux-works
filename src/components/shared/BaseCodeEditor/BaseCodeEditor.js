@@ -4,9 +4,6 @@ import 'brace/mode/javascript';
 import 'brace/theme/monokai'
 import './BaseCodeEditor.scss'
 
-
-
-
 const flexStyles = { display: 'flex', flexGrow: 1, flexDirection: 'column' }
 
 const BaseCodeEditor = ({ name, value, onChange, isReadOnly, customJsonStyles = false, ...props }) => 
@@ -20,7 +17,7 @@ const BaseCodeEditor = ({ name, value, onChange, isReadOnly, customJsonStyles = 
       name={name}
       onChange={onChange} //function param: onChange(newValue, event)
       fontSize={14}
-      minLines={10}
+      minLines={16}
       maxLines={Infinity}
       width="100%"
       style={{ position: 'absolute', top: 0 }}
